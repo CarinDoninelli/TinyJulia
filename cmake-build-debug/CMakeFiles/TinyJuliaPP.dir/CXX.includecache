@@ -11,6 +11,8 @@ ReturningContext.h
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/ReturningContext.h
 errors.h
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/errors.h
+utils.h
+/Users/eherrera/Documents/UNITEC/TinyJuliaPP/utils.h
 sstream
 -
 
@@ -20,6 +22,8 @@ string
 utility
 -
 vector
+-
+map
 -
 types.h
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/types.h
@@ -97,7 +101,7 @@ string
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/utils.cpp
 utils.h
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/utils.h
-ctime
+regex
 -
 
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/utils.h

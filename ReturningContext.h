@@ -8,6 +8,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <map>
 #include "types.h"
 
 using namespace std;
@@ -47,6 +48,17 @@ public:
     static string joined();
 
     static FunctionMeta find(const string &name, const vector<ReturnType> &argumentTypes);
+};
+
+class LiteralCode {
+    static map<string, string> *literals;
+
+public:
+    static void add(string literal, string label);
+
+    static string findLabel(const string &literal);
+
+    static string joined();
 };
 
 #endif //TINYJULIAPP_RETURNINGCONTEXT_H

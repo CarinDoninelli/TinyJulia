@@ -8,7 +8,16 @@
 #include "utils.h"
 
 ReturningContext IntExpression::evaluate(Scope *scope) {
-    return ReturningContext(to_string(value), ReturnType::INTEGER);
+    return ReturningContext { to_string(value), ReturnType::INTEGER };
+}
+
+ReturningContext StringExpression::evaluate(Scope *scope) {
+    auto label = LiteralCode::findLabel(value);
+    return ReturningContext { label, ReturnType::STRING };
+}
+
+ReturningContext BoolExpression::evaluate(Scope *scope) {
+    return ReturningContext { (value ? "1" : "0"), ReturnType::BOOL };
 }
 
 ReturningContext IdExpression::evaluate(Scope *scope) {
@@ -102,6 +111,36 @@ ReturningContext DivExpression::evaluate(Scope *scope) {
     });
 }
 
+ReturningContext AndExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::BOOL);
+        checkType(rightContext.type, ReturnType::BOOL);
+
+        auto falseLabel = newLabel();
+        auto trueLabel = newLabel();
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "cmp " << leftContext.place << ", 0" << endl
+             << "je " << falseLabel << endl
+             << "cmp " << rightContext.place << ", 0" << endl
+             << "je " << falseLabel << endl
+             << "mov eax, 1" << endl
+             << "jmp " << trueLabel << endl
+             << falseLabel << ": " << endl
+             << "mov eax, 0" << endl
+             << "movzx eax, al" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+
+        return ReturningContext { ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
 ReturningContext Block::evaluate(Scope *scope) {
     return scope->withSnapshot([this, scope]() {
         stringstream code;
@@ -122,7 +161,7 @@ ReturningContext Declaration::evaluate(Scope *scope) {
         code << context.code
              << "sub esp, 4" << endl
              << "mov eax, " << context.place << endl
-             << "mov " << ebp(newVariable->offset) << ", eax" << endl;
+             << "mov " << ebp(newVariable->offset) << ", eax\t; " << varName << "::" << to_string(type) << endl;
 
         return ReturningContext { ebp(newVariable->offset), type, code.str() };
     });
@@ -138,7 +177,7 @@ ReturningContext Assignment::evaluate(Scope *scope) {
         stringstream code;
         code << context.code
              << "mov eax, " << context.place << endl
-             << "mov " << ebp(variable->offset) << ", eax" << endl;
+             << "mov " << ebp(variable->offset) << ", eax\t; " << varName << endl;
 
         return ReturningContext { ebp(variable->offset), variable->type, code.str() };
     });
@@ -150,7 +189,9 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
         auto label = newLabel();
 
         stringstream code;
-        code << label << ":  ; " << name << endl;
+        code << label << ":\t; " << name << endl
+             << "push ebp" << endl
+             << "mov ebp, esp" << endl;
 
         for (int i = 0; i < params.size(); i++) {
             auto newVariable = functionScope->createNewVariable(params[i].name, params[i].type);
@@ -213,6 +254,37 @@ ReturningContext Return::evaluate(Scope *scope) {
              << "mov eax, " << context.place << endl
              << "leave" << endl
              << "ret" << endl;
+        return ReturningContext { code.str() };
+    });
+}
+
+ReturningContext Print::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        vector<ReturningContext> contexts;
+        for (auto expression : expressions) {
+            contexts.push_back(expression->evaluate(scope));
+        }
+
+        stringstream code;
+        for (const auto &context : contexts) {
+            code << context.code;
+        }
+
+        for (const auto &context : contexts) {
+            if (context.type == ReturnType::STRING) {
+                code << "sub esp, 4" << endl
+                     << "push " << context.place << endl
+                     << "call printf" << endl
+                     << "add esp, 4" << endl;
+            } else {
+                code << "sub esp, 8" << endl
+                     << "push " << context.place << endl
+                     << "push print_fmt_int" << endl
+                     << "call printf" << endl
+                     << "add esp, 8" << endl;
+            }
+        }
+
         return ReturningContext { code.str() };
     });
 }

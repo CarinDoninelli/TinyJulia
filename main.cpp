@@ -21,17 +21,42 @@ int main() {
                             }
                     })
             },
-            new FunctionCall{
-                    "add",
-                    vector<Expression *> {
-                            new IntExpression{ 12 },
-                            new IntExpression{ 10 }
+            new Declaration{
+                    "result",
+                    ReturnType::INTEGER,
+                    new FunctionCall{
+                            "add",
+                            vector<Expression *> {
+                                    new IntExpression{ 12 },
+                                    new IntExpression{ 10 }
+                            }
                     }
-            }
+            },
+            new Declaration{
+                    "text",
+                    ReturnType::STRING,
+                    new StringExpression{ "\"hello!\", 10, 0" }
+            },
+            new Print(vector<Expression *> {
+                    new IdExpression{ "result" },
+                    new IdExpression{ "text" }
+            })
     });
 
-    cout << expr->evaluate(new Scope()).code << endl;
-    cout << FunctionCode::joined();
+    auto result = expr->evaluate(new Scope());
+
+    cout << "global main" << endl
+         << "extern printf" << endl
+         << "section .data" << endl
+         << LiteralCode::joined() << endl
+         << "section .text" << endl
+         << "main:" << endl
+         << "push ebp" << endl
+         << "mov ebp, esp" << endl
+         << result.code
+         << "leave" << endl
+         << "ret" << endl
+         << FunctionCode::joined();
 
     return 0;
 }

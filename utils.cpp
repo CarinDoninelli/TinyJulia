@@ -4,17 +4,16 @@
 
 #include "utils.h"
 
-#include <ctime>
 #include <regex>
+
+static int counter = 0;
 
 string ebp(int offset) {
     return "DWORD [ebp-" + to_string(offset) + "]";
 }
 
 string newLabel() {
-    srand(static_cast<unsigned int>(time(nullptr)));
-    auto random = rand() % 20000 + 1; // NOLINT
-    return string("L") + to_string(random);
+    return string("L") + to_string(counter++);
 }
 
 string escapedString(const string &str) {
@@ -23,7 +22,7 @@ string escapedString(const string &str) {
 }
 
 char *charPtr(const string &str) {
-    char * writable = new char[str.size() + 1];
+    auto writable = new char[str.size() + 1];
     std::copy(str.begin(), str.end(), writable);
     writable[str.size()] = '\0';
     return writable;

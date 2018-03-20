@@ -17,4 +17,6 @@ string escapedString(const string &str);
 
 char *charPtr(const string &str);
 
+char toASMLiteral(const string &str);
+
 #endif //TINYJULIAPP_UTILS_H

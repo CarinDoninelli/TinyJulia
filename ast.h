@@ -35,6 +35,22 @@ struct IntExpression : public Expression {
     ReturningContext evaluate(Scope *scope) override;
 };
 
+struct StringExpression : public Expression {
+    string value;
+
+    explicit StringExpression(string value) : value(move(value)) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct BoolExpression : public Expression {
+    bool value;
+
+    explicit BoolExpression(bool value) : value(value) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
 struct IdExpression : public Expression {
     string varName;
 
@@ -58,6 +74,8 @@ DEFINE_BINARY_EXPR(Sub);
 DEFINE_BINARY_EXPR(Mul);
 
 DEFINE_BINARY_EXPR(Div);
+
+DEFINE_BINARY_EXPR(And);
 
 struct Block : public Expression {
     list<Expression *> statements;
@@ -111,9 +129,9 @@ private:
 
 struct FunctionCall : public Expression {
     string functionName;
-    vector<Expression*> arguments;
+    vector<Expression *> arguments;
 
-    FunctionCall(string functionName, vector<Expression*> arguments) :
+    FunctionCall(string functionName, vector<Expression *> arguments) :
             functionName(move(functionName)), arguments(move(arguments)) {}
 
     ReturningContext evaluate(Scope *scope) override;
@@ -123,6 +141,14 @@ struct Return : public Expression {
     Expression *expression;
 
     explicit Return(Expression *expression) : expression(expression) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct Print : public Expression {
+    vector<Expression *> expressions;
+
+    explicit Print(vector<Expression *> expressions) : expressions(move(expressions)) {}
 
     ReturningContext evaluate(Scope *scope) override;
 };
