@@ -153,4 +153,15 @@ struct Print : public Expression {
     ReturningContext evaluate(Scope *scope) override;
 };
 
+struct If : public Expression {
+    Expression *condition;
+    Expression *body;
+    Expression *alternative;
+
+    If(Expression *condition, Expression *body, Expression *alternative) :
+            condition(condition), body(body), alternative(alternative) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
 #endif //TINYJULIAPP_AST_H

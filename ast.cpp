@@ -288,3 +288,26 @@ ReturningContext Print::evaluate(Scope *scope) {
         return ReturningContext { code.str() };
     });
 }
+
+ReturningContext If::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto conditionContext = condition->evaluate(scope);
+        checkType(conditionContext.type, ReturnType::BOOL);
+
+        auto bodyContext = body->evaluate(scope);
+
+        auto elseLabel = newLabel();
+
+        stringstream code;
+        code << conditionContext.code
+             << "cmp " << conditionContext.place << ", 0" << endl
+             << "jne " << elseLabel << endl
+             << bodyContext.code
+             << elseLabel << ":" << endl;
+        if (alternative != nullptr) {
+            code << alternative->evaluate(scope).code;
+        }
+
+        return ReturningContext { code.str() };
+    });
+}
