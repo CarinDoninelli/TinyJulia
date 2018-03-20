@@ -297,16 +297,19 @@ ReturningContext If::evaluate(Scope *scope) {
         auto bodyContext = body->evaluate(scope);
 
         auto elseLabel = newLabel();
+        auto ifLabel = newLabel();
 
         stringstream code;
         code << conditionContext.code
              << "cmp " << conditionContext.place << ", 0" << endl
-             << "jne " << elseLabel << endl
+             << "je " << elseLabel << endl
              << bodyContext.code
+             << "jmp " << ifLabel << endl
              << elseLabel << ":" << endl;
         if (alternative != nullptr) {
             code << alternative->evaluate(scope).code;
         }
+        code << ifLabel << ":" << endl;
 
         return ReturningContext { code.str() };
     });
