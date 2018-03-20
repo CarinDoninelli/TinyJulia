@@ -55,11 +55,15 @@ checks.h
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/checks.h
 errors.h
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/errors.h
+sstream
+-
 
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/checks.h
 string
 -
 utility
+-
+vector
 -
 types.h
 /Users/eherrera/Documents/UNITEC/TinyJuliaPP/types.h
