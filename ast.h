@@ -77,6 +77,8 @@ DEFINE_BINARY_EXPR(Div);
 
 DEFINE_BINARY_EXPR(And);
 
+DEFINE_BINARY_EXPR(Or);
+
 struct Block : public Expression {
     list<Expression *> statements;
 

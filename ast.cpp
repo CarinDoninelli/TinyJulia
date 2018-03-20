@@ -120,7 +120,7 @@ ReturningContext AndExpression::evaluate(Scope *scope) {
         checkType(rightContext.type, ReturnType::BOOL);
 
         auto falseLabel = newLabel();
-        auto trueLabel = newLabel();
+        auto endLabel = newLabel();
 
         auto place = scope->newTempSpace();
         stringstream code;
@@ -131,12 +131,46 @@ ReturningContext AndExpression::evaluate(Scope *scope) {
              << "cmp " << rightContext.place << ", 0" << endl
              << "je " << falseLabel << endl
              << "mov eax, 1" << endl
-             << "jmp " << trueLabel << endl
+             << "jmp " << endLabel << endl
              << falseLabel << ": " << endl
              << "mov eax, 0" << endl
+             << endLabel << ":" << endl
              << "movzx eax, al" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
+        return ReturningContext { ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext OrExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::BOOL);
+        checkType(rightContext.type, ReturnType::BOOL);
+
+        auto trueLabel = newLabel();
+        auto falseLabel = newLabel();
+        auto endLabel = newLabel();
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "cmp " << leftContext.place << ", 0" << endl
+             << "jne " << trueLabel << endl
+             << "cmp " << rightContext.place << ", 0" << endl
+             << "je " << falseLabel << endl
+             << trueLabel << ":" << endl
+             << "mov eax, 1" << endl
+             << "jmp " << endLabel << endl
+             << falseLabel << ":" << endl
+             << "mov eax, 0" << endl
+             << endLabel << ":" << endl
+             << "movzx eax, al" << endl
+             << "mov " << place << ", eax" << endl;
+        
         return ReturningContext { ebp(place), ReturnType::BOOL, code.str() };
     });
 }
