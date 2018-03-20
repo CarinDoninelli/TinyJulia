@@ -9,7 +9,8 @@
 static int counter = 0;
 
 string ebp(int offset) {
-    return "DWORD [ebp-" + to_string(offset) + "]";
+    string value = (offset >= 0) ? "-" + to_string(offset) : "+" + to_string(-offset);
+    return "DWORD [ebp" + value + "]";
 }
 
 string newLabel() {

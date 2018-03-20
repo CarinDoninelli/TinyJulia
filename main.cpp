@@ -4,61 +4,58 @@
 using namespace std;
 
 int main() {
-//    auto expr = new Block(list<Expression *> {
-//            new FunctionDeclaration{
-//                    "add",
-//                    vector<FunctionDeclaration::Param> {
-//                            FunctionDeclaration::Param{ "a", ReturnType::INTEGER },
-//                            FunctionDeclaration::Param { "b", ReturnType::INTEGER }
-//                    },
-//                    ReturnType::INTEGER,
-//                    new Block(list<Expression *>{
-//                            new Return{
-//                                    new AddExpression{
-//                                            new IdExpression{ "a" },
-//                                            new IdExpression{ "b" }
-//                                    }
-//                            }
-//                    })
-//            },
-//            new Declaration{
-//                    "result",
-//                    ReturnType::INTEGER,
-//                    new FunctionCall{
-//                            "add",
-//                            vector<Expression *> {
-//                                    new IntExpression{ 12 },
-//                                    new IntExpression{ 10 }
-//                            }
-//                    }
-//            },
-//            new Declaration{
-//                    "text",
-//                    ReturnType::STRING,
-//                    new StringExpression{ "\"hello!\", 10, 0" }
-//            },
-//            new Print(vector<Expression *> {
-//                    new IdExpression{ "result" },
-//                    new IdExpression{ "text" }
-//            })
-//    });
+   auto expr = new Block(list<Expression *> {
+           new Declaration{
+                   "some_variable",
+                   ReturnType::INTEGER,
+                   new IntExpression{ 5 }
+           },
+           new FunctionDeclaration{
+                   "add",
+                   vector<FunctionDeclaration::Param> {
+                           FunctionDeclaration::Param { "b", ReturnType::INTEGER }
+                   },
+                   ReturnType::INTEGER,
+                   new Block(list<Expression *>{
+                           new Return{
+                                   new AddExpression{
+                                           new IdExpression{ "some_variable" },
+                                           new IdExpression{ "b" }
+                                   }
+                           }
+                   })
+           },
+           new Declaration{
+                   "result",
+                   ReturnType::INTEGER,
+                   new FunctionCall{
+                           "add",
+                           vector<Expression *> {
+                                   new IntExpression{ 12 }
+                           }
+                   }
+           },
+           new Print(vector<Expression *> {
+                   new IdExpression{ "result" }
+           })
+   });
 
-    auto expr = new Block(list<Expression *> {
-            new Declaration{ "condition", ReturnType::BOOL, new BoolExpression{ false }},
-            new If{
-                    new IdExpression{ "condition" },
-                    new Block(list<Expression *> {
-                            new Print(vector<Expression *> {
-                                    new StringExpression{ "\"Is True!\", 10, 0" }
-                            })
-                    }),
-                    new Block(list<Expression *> {
-                            new Print(vector<Expression *> {
-                                    new StringExpression{ "\"is false!\", 10, 0" }
-                            })
-                    })
-            }
-    });
+//     auto expr = new Block(list<Expression *> {
+//             new Declaration{ "condition", ReturnType::BOOL, new BoolExpression{ false }},
+//             new If{
+//                     new IdExpression{ "condition" },
+//                     new Block(list<Expression *> {
+//                             new Print(vector<Expression *> {
+//                                     new StringExpression{ "\"Is True!\", 10, 0" }
+//                             })
+//                     }),
+//                     new Block(list<Expression *> {
+//                             new Print(vector<Expression *> {
+//                                     new StringExpression{ "\"is false!\", 10, 0" }
+//                             })
+//                     })
+//             }
+//     });
 
     auto result = expr->evaluate(new Scope());
 

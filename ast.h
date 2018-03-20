@@ -79,6 +79,8 @@ DEFINE_BINARY_EXPR(And);
 
 DEFINE_BINARY_EXPR(Or);
 
+DEFINE_BINARY_EXPR(Xor);
+
 struct Block : public Expression {
     list<Expression *> statements;
 

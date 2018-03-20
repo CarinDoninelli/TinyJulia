@@ -175,6 +175,26 @@ ReturningContext OrExpression::evaluate(Scope *scope) {
     });
 }
 
+ReturningContext XorExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
+        checkType(rightContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "xor eax, " << rightContext.place << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+
+        return ReturningContext { ebp(place), ReturnType::INTEGER, code.str() };
+    });
+}
+
 ReturningContext Block::evaluate(Scope *scope) {
     return scope->withSnapshot([this, scope]() {
         stringstream code;
@@ -195,7 +215,7 @@ ReturningContext Declaration::evaluate(Scope *scope) {
         code << context.code
              << "sub esp, 4" << endl
              << "mov eax, " << context.place << endl
-             << "mov " << ebp(newVariable->offset) << ", eax\t; " << varName << "::" << to_string(type) << endl;
+             << "mov " << ebp(newVariable->offset) << ", eax" << "\t; " << varName << "::" << to_string(type) << endl;
 
         return ReturningContext { ebp(newVariable->offset), type, code.str() };
     });
@@ -211,7 +231,7 @@ ReturningContext Assignment::evaluate(Scope *scope) {
         stringstream code;
         code << context.code
              << "mov eax, " << context.place << endl
-             << "mov " << ebp(variable->offset) << ", eax\t; " << varName << endl;
+             << "mov " << ebp(variable->offset) << ", eax" << "\t; " << varName << endl;
 
         return ReturningContext { ebp(variable->offset), variable->type, code.str() };
     });
@@ -223,7 +243,7 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
         auto label = newLabel();
 
         stringstream code;
-        code << label << ":\t; " << name << endl
+        code << label << ":" << "\t; decl " << name << endl
              << "push ebp" << endl
              << "mov ebp, esp" << endl;
 
@@ -272,7 +292,7 @@ ReturningContext FunctionCall::evaluate(Scope *scope) {
         }
 
         auto place = scope->newTempSpace();
-        code << "call " << function.label << " ; " << functionName << endl
+        code << "call " << function.label << "\t; call " << functionName << endl
              << "add esp, " << to_string(arguments.size() * 8) << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
@@ -330,20 +350,20 @@ ReturningContext If::evaluate(Scope *scope) {
 
         auto bodyContext = body->evaluate(scope);
 
-        auto elseLabel = newLabel();
-        auto ifLabel = newLabel();
+        auto falseLabel = newLabel();
+        auto trueLabel = newLabel();
 
         stringstream code;
         code << conditionContext.code
-             << "cmp " << conditionContext.place << ", 0" << endl
-             << "je " << elseLabel << endl
+             << "cmp " << conditionContext.place << ", 0" << "\t; if { true: " << trueLabel << ", false: " << falseLabel << " }" << endl
+             << "je " << falseLabel << endl
              << bodyContext.code
-             << "jmp " << ifLabel << endl
-             << elseLabel << ":" << endl;
+             << "jmp " << trueLabel << endl
+             << falseLabel << ":" << endl;
         if (alternative != nullptr) {
             code << alternative->evaluate(scope).code;
         }
-        code << ifLabel << ":" << endl;
+        code << trueLabel << ":" << endl;
 
         return ReturningContext { code.str() };
     });

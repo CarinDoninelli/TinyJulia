@@ -33,7 +33,7 @@ Var *Scope::find(const string &variable) {
 
     auto found = outer->find(variable);
     return new Var{
-            8 - found->offset + outer->size() + (paramCount * 4),
+            (-1) * (4 + (paramCount*4) + outer->size() - found->offset),
             found->type
     };
 }
