@@ -535,3 +535,69 @@ ReturningContext While::evaluate(Scope *scope) {
         return ReturningContext { code.str() };
     });
 }
+
+ReturningContext For::evaluate(Scope *scope) {
+    scope = new Scope(scope);
+    return scope->withSnapshot([this, scope]() {
+        auto lowerBoundContext = lowerBound->evaluate(scope);
+        auto upperBoundContext = upperBound->evaluate(scope);
+
+        checkType(lowerBoundContext.type, ReturnType::INTEGER);
+        checkType(upperBoundContext.type, ReturnType::INTEGER);
+
+        auto loopingVariable = scope->createNewVariable(varName, ReturnType::INTEGER);
+        auto loopingVariablePlace = ebp(loopingVariable->offset);
+        
+        auto forLabel = newLabel();
+        auto endForLabel = newLabel();
+
+        stringstream code;
+        code << lowerBoundContext.code
+             << upperBoundContext.code
+             << "mov eax, " << lowerBoundContext.place << endl
+             << "mov " << loopingVariablePlace << ", eax" << endl
+             << forLabel << ":" << "\t; For { end: " << endForLabel << " }" << endl
+             << "mov eax, " << loopingVariablePlace << endl
+             << "cmp eax, " << upperBoundContext.place << endl
+             << "setl cl" << endl
+             << "and cl, 1" << endl
+             << "jz " << endForLabel << endl
+             << body->evaluate(scope).code
+             << "inc " << loopingVariablePlace << endl
+             << "jmp " << forLabel << endl
+             << endForLabel << ":" << "\t; end of " << forLabel << endl;
+        
+        return ReturningContext{ code.str() };
+    });
+}
+
+ReturningContext UnaryMinus::evaluate(Scope *scope) {
+    auto multiplication = new MulExpression{
+        new IntExpression{ -1 },
+        expression
+    };
+
+    auto result = multiplication->evaluate(scope);
+    delete multiplication;
+    return result;
+}
+
+ReturningContext Negation::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto context = expression->evaluate(scope);
+        checkType(context.type, ReturnType::BOOL);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << context.code
+             << "mov eax, " << context.place << endl
+             << "cmp eax, 0" << endl
+             << "setne al" << endl
+             << "xor al, -1" << endl
+             << "and al, 1" << endl
+             << "movzx eax, al" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}

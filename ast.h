@@ -189,4 +189,32 @@ struct While : public Expression {
     ReturningContext evaluate(Scope *scope) override;
 };
 
+struct For : public Expression {
+    string varName;
+    Expression *lowerBound;
+    Expression *upperBound;
+    Expression *body;
+
+    For(string varName, Expression *lowerBound, Expression *upperBound, Expression *body) :
+            varName(move(varName)), lowerBound(lowerBound), upperBound(upperBound), body(body) {}
+    
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct UnaryMinus : public Expression {
+    Expression *expression;
+
+    explicit UnaryMinus(Expression *expression) : expression(expression) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct Negation : public Expression {
+    Expression *expression;
+
+    explicit Negation(Expression *expression) : expression(expression) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
 #endif //TINYJULIAPP_AST_H

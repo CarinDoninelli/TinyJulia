@@ -25,3 +25,9 @@ void checkType(ReturnType type, const vector<ReturnType> &expected) {
     }
     throw TypeError(expectedStr.str(), to_string(type));
 }
+
+void checkRange(int lower, int upper) {
+    if (lower > upper) {
+        throw InvalidRangeError();
+    }
+}

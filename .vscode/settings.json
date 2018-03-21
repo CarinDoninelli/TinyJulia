@@ -5,6 +5,7 @@
         "algorithm": "cpp",
         "sstream": "cpp",
         "list": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "bitset": "cpp"
     }
 }

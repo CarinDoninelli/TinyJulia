@@ -70,4 +70,7 @@ struct UndefinedFunctionError : public exception {
     }
 };
 
+struct InvalidRangeError : public exception {
+};
+
 #endif //TINYJULIAPP_ERRORS_H
