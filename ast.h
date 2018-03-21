@@ -93,6 +93,8 @@ DEFINE_BINARY_EXPR(Equal);
 
 DEFINE_BINARY_EXPR(NotEqual);
 
+DEFINE_BINARY_EXPR(Pow);
+
 struct Block : public Expression {
     list<Expression *> statements;
 
@@ -213,6 +215,14 @@ struct Negation : public Expression {
     Expression *expression;
 
     explicit Negation(Expression *expression) : expression(expression) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct BitNegation : public Expression {
+    Expression *expression;
+
+    explicit BitNegation(Expression *expression) : expression(expression) {}
 
     ReturningContext evaluate(Scope *scope) override;
 };

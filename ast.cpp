@@ -337,6 +337,27 @@ ReturningContext NotEqualExpression::evaluate(Scope *scope) {
     });
 }
 
+ReturningContext PowExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::INTEGER);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "push " << rightContext.place << endl
+             << "push " << leftContext.place << endl
+             << "call pow_helper_function" << endl
+             << "add esp, 8" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+    });
+}
 
 ReturningContext Block::evaluate(Scope *scope) {
     return scope->withSnapshot([this, scope]() {
@@ -396,7 +417,11 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
                  << "mov " << ebp(newVariable->offset) << ", eax" << endl;
         }
 
-        code << body->evaluate(functionScope).code
+        code << body->evaluate(functionScope).code;
+        if (type != ReturnType::UNIT) {
+            code << "ud2" << "\t; End of function reached without return." << endl;
+        }
+        code << "mov eax, 0" << endl
              << "leave" << endl
              << "ret" << endl;
 
@@ -599,5 +624,21 @@ ReturningContext Negation::evaluate(Scope *scope) {
              << "mov " << ebp(place) << ", eax" << endl;
 
         return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext BitNegation::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto context = expression->evaluate(scope);
+        checkType(context.type, ReturnType::INTEGER);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << context.code
+             << "mov eax, " << context.place << endl
+             << "xor eax, -1" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+
+        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
     });
 }

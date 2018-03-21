@@ -70,7 +70,7 @@ int main() {
     auto result = expr->evaluate(new Scope());
 
     cout << "global main" << endl
-         << "extern printf" << endl
+         << FunctionCode::externFunctionCode() << endl
          << "section .data" << endl
          << LiteralCode::joined() << endl
          << "section .text" << endl

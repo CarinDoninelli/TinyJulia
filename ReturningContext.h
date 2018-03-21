@@ -42,12 +42,15 @@ struct FunctionMeta {
 
 class FunctionCode {
     static vector<FunctionMeta> codeBlocks;
+    static vector<string> externFunctions;
 public:
     static void add(FunctionMeta meta);
 
     static string joined();
 
     static FunctionMeta find(const string &name, const vector<ReturnType> &argumentTypes);
+
+    static string externFunctionCode();
 };
 
 class LiteralCode {

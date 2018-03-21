@@ -8,6 +8,10 @@
 #include <sstream>
 
 vector<FunctionMeta> FunctionCode::codeBlocks;
+vector<string> FunctionCode::externFunctions{
+        "printf",
+        "pow_helper_function"
+};
 
 void FunctionCode::add(FunctionMeta meta) {
     for (const auto &block : codeBlocks) {
@@ -35,6 +39,14 @@ FunctionMeta FunctionCode::find(const string &name, const vector<ReturnType> &ar
     }
 
     throw UndefinedFunctionError(name);
+}
+
+string FunctionCode::externFunctionCode() {
+    stringstream ss;
+    for (const auto &function : externFunctions) {
+        ss << "extern " << function << endl;
+    }
+    return ss.str();
 }
 
 map<string, string> *LiteralCode::literals = new map<string, string> { // NOLINT
