@@ -17,9 +17,19 @@ int main() {
                    },
                    ReturnType::INTEGER,
                    new Block(list<Expression *>{
+                           new While{
+                                   new BoolExpression{ true },
+                                   new Block(list<Expression*> {
+                                           new Declaration{
+                                                   "while_var",
+                                                   ReturnType::INTEGER,
+                                                   new IntExpression{ 60 }
+                                           }
+                                   })
+                           },
                            new Return{
                                    new AddExpression{
-                                           new IdExpression{ "some_variable" },
+                                           new IdExpression{ "while_var" },
                                            new IdExpression{ "b" }
                                    }
                            }

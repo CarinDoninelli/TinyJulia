@@ -81,6 +81,18 @@ DEFINE_BINARY_EXPR(Or);
 
 DEFINE_BINARY_EXPR(Xor);
 
+DEFINE_BINARY_EXPR(LessThan);
+
+DEFINE_BINARY_EXPR(GreaterThan);
+
+DEFINE_BINARY_EXPR(LessThanOrEqual);
+
+DEFINE_BINARY_EXPR(GreaterThanOrEqual);
+
+DEFINE_BINARY_EXPR(Equal);
+
+DEFINE_BINARY_EXPR(NotEqual);
+
 struct Block : public Expression {
     list<Expression *> statements;
 
@@ -164,6 +176,15 @@ struct If : public Expression {
 
     If(Expression *condition, Expression *body, Expression *alternative) :
             condition(condition), body(body), alternative(alternative) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct While : public Expression {
+    Expression *condition;
+    Expression *body;
+
+    While(Expression *condition, Expression *body) : condition(condition), body(body) {}
 
     ReturningContext evaluate(Scope *scope) override;
 };

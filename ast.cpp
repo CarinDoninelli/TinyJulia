@@ -126,9 +126,11 @@ ReturningContext AndExpression::evaluate(Scope *scope) {
         stringstream code;
         code << leftContext.code
              << rightContext.code
-             << "cmp " << leftContext.place << ", 0" << endl
+             << "mov eax, " << leftContext.place << endl
+             << "cmp eax, 0" << endl
              << "je " << falseLabel << endl
-             << "cmp " << rightContext.place << ", 0" << endl
+             << "mov eax, " << rightContext.place << endl
+             << "cmp eax, 0" << endl
              << "je " << falseLabel << endl
              << "mov eax, 1" << endl
              << "jmp " << endLabel << endl
@@ -158,9 +160,11 @@ ReturningContext OrExpression::evaluate(Scope *scope) {
         stringstream code;
         code << leftContext.code
              << rightContext.code
-             << "cmp " << leftContext.place << ", 0" << endl
+             << "mov eax, " << leftContext.place << endl 
+             << "cmp eax, 0" << endl
              << "jne " << trueLabel << endl
-             << "cmp " << rightContext.place << ", 0" << endl
+             << "mov eax, " << rightContext.place << endl
+             << "cmp eax, 0" << endl
              << "je " << falseLabel << endl
              << trueLabel << ":" << endl
              << "mov eax, 1" << endl
@@ -194,6 +198,145 @@ ReturningContext XorExpression::evaluate(Scope *scope) {
         return ReturningContext { ebp(place), ReturnType::INTEGER, code.str() };
     });
 }
+
+ReturningContext LessThanExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::BOOL);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "cmp eax, " << rightContext.place << endl
+             << "setl cl" << endl
+             << "and cl, 1" << endl
+             << "movzx eax, cl" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext GreaterThanExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::BOOL);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "cmp eax, " << rightContext.place << endl
+             << "setg cl" << endl
+             << "and cl, 1" << endl
+             << "movzx eax, cl" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext LessThanOrEqualExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::BOOL);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "cmp eax, " << rightContext.place << endl
+             << "setle cl" << endl
+             << "and cl, 1" << endl
+             << "movzx eax, cl" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext GreaterThanOrEqualExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::BOOL);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "cmp eax, " << rightContext.place << endl
+             << "setge cl" << endl
+             << "and cl, 1" << endl
+             << "movzx eax, cl" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext EqualExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::BOOL);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "cmp eax, " << rightContext.place << endl
+             << "sete cl" << endl
+             << "and cl, 1" << endl
+             << "movzx eax, cl" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext NotEqualExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::BOOL);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "cmp eax, " << rightContext.place << endl
+             << "setne cl" << endl
+             << "and cl, 1" << endl
+             << "movzx eax, cl" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
 
 ReturningContext Block::evaluate(Scope *scope) {
     return scope->withSnapshot([this, scope]() {
@@ -355,7 +498,8 @@ ReturningContext If::evaluate(Scope *scope) {
 
         stringstream code;
         code << conditionContext.code
-             << "cmp " << conditionContext.place << ", 0" << "\t; if { true: " << trueLabel << ", false: " << falseLabel << " }" << endl
+             << "mov eax, " << conditionContext.place << endl
+             << "cmp eax, 0" << "\t; if { true: " << trueLabel << ", false: " << falseLabel << " }" << endl
              << "je " << falseLabel << endl
              << bodyContext.code
              << "jmp " << trueLabel << endl
@@ -365,6 +509,29 @@ ReturningContext If::evaluate(Scope *scope) {
         }
         code << trueLabel << ":" << endl;
 
+        return ReturningContext { code.str() };
+    });
+}
+
+ReturningContext While::evaluate(Scope *scope) {
+    scope = new Scope(scope);
+    return scope->withSnapshot([this, scope]() {
+        auto conditionContext = condition->evaluate(scope);
+        checkType(conditionContext.type, ReturnType::BOOL);
+
+        auto whileLabel = newLabel();
+        auto endWhileLabel = newLabel();
+
+        stringstream code;
+        code << whileLabel << ":" << "\t; while { end: " << endWhileLabel << "}" << endl
+             << conditionContext.code
+             << "mov eax, " << conditionContext.place << endl
+             << "cmp eax, 0" << endl
+             << "je " << endWhileLabel << endl
+             << body->evaluate(scope).code
+             << "jmp " << whileLabel << endl
+             << endWhileLabel << ":" << "\t; end of " << whileLabel;
+            
         return ReturningContext { code.str() };
     });
 }
