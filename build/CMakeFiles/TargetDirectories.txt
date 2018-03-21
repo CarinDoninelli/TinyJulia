@@ -1,3 +1,0 @@
-/Users/carin.doninelli/Desktop/TinyJulia/build/CMakeFiles/rebuild_cache.dir
-/Users/carin.doninelli/Desktop/TinyJulia/build/CMakeFiles/edit_cache.dir
-/Users/carin.doninelli/Desktop/TinyJulia/build/CMakeFiles/TinyJuliaPP.dir
