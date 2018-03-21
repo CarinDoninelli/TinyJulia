@@ -1,7 +1,3 @@
-//
-// Created by Edwin Herrera on 3/20/18.
-//
-
 #ifndef TINYJULIAPP_RETURNINGCONTEXT_H
 #define TINYJULIAPP_RETURNINGCONTEXT_H
 

@@ -1,7 +1,3 @@
-//
-// Created by Edwin Herrera on 3/20/18.
-//
-
 #ifndef TINYJULIAPP_SCOPE_H
 #define TINYJULIAPP_SCOPE_H
 

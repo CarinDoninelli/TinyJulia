@@ -1,7 +1,3 @@
-//
-// Created by Edwin Herrera on 3/20/18.
-//
-
 #ifndef TINYJULIAPP_TYPES_H
 #define TINYJULIAPP_TYPES_H
 
