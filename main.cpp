@@ -4,51 +4,36 @@
 using namespace std;
 
 int main() {
-   auto expr = new Block(list<Expression *> {
-           new Declaration{
-                   "some_variable",
-                   ReturnType::INTEGER,
-                   new IntExpression{ 5 }
-           },
-           new FunctionDeclaration{
-                   "add",
-                   vector<FunctionDeclaration::Param> {
-                           FunctionDeclaration::Param { "b", ReturnType::INTEGER }
-                   },
-                   ReturnType::INTEGER,
-                   new Block(list<Expression *>{
-                           new While{
-                                   new BoolExpression{ true },
-                                   new Block(list<Expression*> {
-                                           new Declaration{
-                                                   "while_var",
-                                                   ReturnType::INTEGER,
-                                                   new IntExpression{ 60 }
-                                           }
-                                   })
-                           },
-                           new Return{
-                                   new AddExpression{
-                                           new IdExpression{ "while_var" },
-                                           new IdExpression{ "b" }
-                                   }
-                           }
-                   })
-           },
-           new Declaration{
-                   "result",
-                   ReturnType::INTEGER,
-                   new FunctionCall{
-                           "add",
-                           vector<Expression *> {
-                                   new IntExpression{ 12 }
-                           }
-                   }
-           },
-           new Print(vector<Expression *> {
-                   new IdExpression{ "result" }
-           })
-   });
+    auto expr = new Block(vector<Expression *> {
+            new Declaration{
+                    "arr",
+                    ReturnType::INT_ARRAY,
+                    new Array(vector<Expression *> {
+                            new IntExpression{ 1 },
+                            new IntExpression{ 2 },
+                            new IntExpression{ 3 },
+                    })
+            },
+            new ArraySet{
+                    "arr",
+                    new IntExpression{ 1 },
+                    new IntExpression{ 50 }
+            },
+
+            new For{
+                    "x",
+                    new IntExpression{ 0 },
+                    new IntExpression{ 3 },
+                    new Block(vector<Expression *> {
+                            new Print(vector<Expression *>{
+                                    new ArrayAccess{
+                                            "arr",
+                                            new IdExpression{ "x" }
+                                    }
+                            })
+                    })
+            }
+    });
 
 //     auto expr = new Block(list<Expression *> {
 //             new Declaration{ "condition", ReturnType::BOOL, new BoolExpression{ false }},

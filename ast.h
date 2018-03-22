@@ -39,6 +39,14 @@ struct StringExpression : public Expression {
     ReturningContext evaluate(Scope *scope) override;
 };
 
+struct Array : public Expression {
+    vector<Expression *> values;
+
+    explicit Array( vector<Expression *> values) : values(move(values)) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
 struct BoolExpression : public Expression {
     bool value;
 
@@ -98,9 +106,9 @@ DEFINE_BINARY_EXPR(RightShift);
 DEFINE_BINARY_EXPR(Mod);
 
 struct Block : public Expression {
-    list<Expression *> statements;
+    vector<Expression *> statements;
 
-    explicit Block(list<Expression *> statements) : statements(move(statements)) {}
+    explicit Block(vector<Expression *> statements) : statements(move(statements)) {}
 
     ReturningContext evaluate(Scope *scope) override;
 };
@@ -225,6 +233,26 @@ struct BitNegation : public Expression {
     Expression *expression;
 
     explicit BitNegation(Expression *expression) : expression(expression) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct ArrayAccess : public Expression {
+    string varName;
+    Expression *index;
+
+    ArrayAccess(string varName, Expression *index) : varName(move(varName)), index(index) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct ArraySet : public Expression {
+    string varName;
+    Expression *index;
+    Expression *expression;
+
+    ArraySet(string varName, Expression *index, Expression *expression) : 
+            varName(move(varName)), index(index), expression(expression) {}
 
     ReturningContext evaluate(Scope *scope) override;
 };

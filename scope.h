@@ -13,8 +13,11 @@ using namespace std;
 struct Var {
     int offset;
     ReturnType type;
+    int size;
 
-    Var(int offset, ReturnType type) : offset(offset), type(type) {}
+    Var(int offset, ReturnType type) : offset(offset), type(type), size(defaultSize(type)) {}
+
+    Var(int offset, ReturnType type, int size) : offset(offset), type(type), size(size) {}
 };
 
 class Scope {

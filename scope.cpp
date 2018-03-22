@@ -19,7 +19,11 @@ int Scope::newTempSpace() {
 }
 
 int Scope::size() {
-    return static_cast<int>(tempMemory + (variables.size() * 4));
+    int size = tempMemory;
+    for (const auto &var : variables) {
+        size += var.second->size;
+    }
+    return size;
 }
 
 Var *Scope::find(const string &variable) {
@@ -33,7 +37,7 @@ Var *Scope::find(const string &variable) {
 
     auto found = outer->find(variable);
     return new Var{
-            (-1) * (4 + (paramCount*4) + outer->size() - found->offset),
+            (-1) * (4 + (paramCount * 4) + outer->size() - found->offset),
             found->type
     };
 }
