@@ -205,7 +205,7 @@ ReturningContext LessThanExpression::evaluate(Scope *scope) {
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
-        checkType(rightContext.type, ReturnType::BOOL);
+        checkType(rightContext.type, ReturnType::INTEGER);
 
         auto place = scope->newTempSpace();
         stringstream code;
@@ -228,7 +228,7 @@ ReturningContext GreaterThanExpression::evaluate(Scope *scope) {
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
-        checkType(rightContext.type, ReturnType::BOOL);
+        checkType(rightContext.type, ReturnType::INTEGER);
 
         auto place = scope->newTempSpace();
         stringstream code;
@@ -251,7 +251,7 @@ ReturningContext LessThanOrEqualExpression::evaluate(Scope *scope) {
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
-        checkType(rightContext.type, ReturnType::BOOL);
+        checkType(rightContext.type, ReturnType::INTEGER);
 
         auto place = scope->newTempSpace();
         stringstream code;
@@ -274,7 +274,7 @@ ReturningContext GreaterThanOrEqualExpression::evaluate(Scope *scope) {
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
-        checkType(rightContext.type, ReturnType::BOOL);
+        checkType(rightContext.type, ReturnType::INTEGER);
 
         auto place = scope->newTempSpace();
         stringstream code;
@@ -297,7 +297,7 @@ ReturningContext EqualExpression::evaluate(Scope *scope) {
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
-        checkType(rightContext.type, ReturnType::BOOL);
+        checkType(rightContext.type, ReturnType::INTEGER);
 
         auto place = scope->newTempSpace();
         stringstream code;
@@ -320,7 +320,7 @@ ReturningContext NotEqualExpression::evaluate(Scope *scope) {
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
-        checkType(rightContext.type, ReturnType::BOOL);
+        checkType(rightContext.type, ReturnType::INTEGER);
 
         auto place = scope->newTempSpace();
         stringstream code;
@@ -331,6 +331,70 @@ ReturningContext NotEqualExpression::evaluate(Scope *scope) {
              << "setne cl" << endl
              << "and cl, 1" << endl
              << "movzx eax, cl" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext LeftShiftExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::INTEGER);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "mov ecx, " << rightContext.place << endl
+             << "shl eax, cl" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext RightShiftExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::INTEGER);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "mov ecx, " << rightContext.place << endl
+             << "shr eax, cl" << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+        
+        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+    });
+}
+
+ReturningContext ModExpression::evaluate(Scope *scope) {
+    return scope->withSnapshot([this, scope]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, ReturnType::INTEGER);
+        checkType(rightContext.type, ReturnType::INTEGER);
+
+        auto place = scope->newTempSpace();
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "cdq" << endl
+             << "idiv " << rightContext.place << endl
+             << "mov eax, edx" << endl
              << "mov " << ebp(place) << ", eax" << endl;
         
         return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
@@ -371,7 +435,10 @@ ReturningContext Block::evaluate(Scope *scope) {
 
 ReturningContext Declaration::evaluate(Scope *scope) {
     return scope->withSnapshot([this, scope]() {
-        auto context = expression->evaluate(scope);
+
+        ReturningContext context = expression != nullptr 
+                                   ? expression->evaluate(scope)
+                                   : ReturningContext{ defaultValue(type), type, "" };                           
         checkType(context.type, type);
 
         auto newVariable = scope->createNewVariable(varName, type);

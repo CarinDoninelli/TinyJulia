@@ -91,6 +91,12 @@ DEFINE_BINARY_EXPR(NotEqual);
 
 DEFINE_BINARY_EXPR(Pow);
 
+DEFINE_BINARY_EXPR(LeftShift);
+
+DEFINE_BINARY_EXPR(RightShift);
+
+DEFINE_BINARY_EXPR(Mod);
+
 struct Block : public Expression {
     list<Expression *> statements;
 

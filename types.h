@@ -25,4 +25,17 @@ inline string to_string(ReturnType type) {
     }
 }
 
+inline string defaultValue(ReturnType type) {
+     switch (type) {
+        case ReturnType::UNIT:
+            return "";
+        case ReturnType::INTEGER:
+            return "0";
+        case ReturnType::BOOL:
+            return "0";
+        case ReturnType::STRING:
+            return "";
+    }
+}
+
 #endif //TINYJULIAPP_TYPES_H

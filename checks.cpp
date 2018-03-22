@@ -6,15 +6,29 @@
 #include "errors.h"
 #include <sstream>
 
+bool typeIsSubSet(ReturnType type, ReturnType superSet) {
+    if (type == superSet) {
+        return true;
+    }
+
+    if (superSet == ReturnType::INTEGER) {
+        if (type == ReturnType::BOOL) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void checkType(ReturnType type, ReturnType expected) {
-    if (type != expected) {
+    if (!typeIsSubSet(type, expected)) {
         throw TypeError(to_string(expected), to_string(type));
     }
 }
 
 void checkType(ReturnType type, const vector<ReturnType> &expected) {
     for (const auto &t : expected) {
-        if (t == type) {
+        if (typeIsSubSet(t, type)) {
             return;
         }
     }
