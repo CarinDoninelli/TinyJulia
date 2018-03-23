@@ -9,7 +9,10 @@ int main() {
                     "arr",
                     ReturnType::INT_ARRAY,
                     new Array(vector<Expression *> {
-                            new IntExpression{ 1 },
+                            new AddExpression{
+                                    new IntExpression{ 1 },
+                                    new IntExpression{ 5 }
+                            },
                             new IntExpression{ 2 },
                             new IntExpression{ 3 },
                     })

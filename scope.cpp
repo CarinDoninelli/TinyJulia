@@ -51,3 +51,19 @@ Var *Scope::createNewVariable(const string &name, ReturnType type) {
     variables[name] = newVariable;
     return newVariable;
 }
+
+Var *Scope::changeVarName(string newVarName, function<bool(Var *)> predicate) {
+    if (variables.find(newVarName) != variables.end()) {
+        throw VariableRedefinitionError(newVarName);
+    }
+
+    for (const auto &var : variables) {
+        if (predicate(var.second)) {
+            variables[newVarName] = var.second;
+            variables.erase(var.first);
+            return var.second;
+        }
+    }
+
+    throw invalid_argument("No matching variable found.");
+}

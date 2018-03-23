@@ -6,6 +6,11 @@
         "sstream": "cpp",
         "list": "cpp",
         "ios": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "__bit_reference": "cpp",
+        "__string": "cpp",
+        "deque": "cpp",
+        "memory": "cpp",
+        "type_traits": "cpp"
     }
 }

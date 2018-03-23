@@ -35,6 +35,8 @@ public:
 
     ReturningContext withSnapshot(function<ReturningContext()> action);
 
+    Var *changeVarName(string newVarName, function<bool(Var*)> predicate);
+
     int newTempSpace();
 
     int size();

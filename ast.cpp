@@ -34,7 +34,7 @@ ReturningContext Array::evaluate(Scope *scope) {
         }
 
         auto place = scope->createNewVariable(newLabel(), ReturnType::INT_ARRAY);
-        code << "lea edx, [ebp-" << (place->offset + 400) << "]" << endl
+        code << "lea edx, [ebp-" << (place->offset + defaultSize(ReturnType::INT_ARRAY)) << "]" << endl
              << "mov eax, 0" << endl
              << "mov ecx, 50" << endl
              << "mov edi, edx" << endl
@@ -42,8 +42,9 @@ ReturningContext Array::evaluate(Scope *scope) {
 
         for (int i = 0; i < contexts.size(); i++) {
             auto context = contexts[i];
-            auto contextPlace = place->offset + 400 - (4 * i);
-            code << "mov " << ebp(contextPlace) << ", " << context.place << endl;
+            auto contextPlace = place->offset + defaultSize(ReturnType::INT_ARRAY) - (4 * i);
+            code << "mov eax, " << context.place << endl
+                 << "mov " << ebp(contextPlace) << ", eax" << endl;
         }
 
         return ReturningContext{ to_string(place->offset), ReturnType::INT_ARRAY, code.str() };

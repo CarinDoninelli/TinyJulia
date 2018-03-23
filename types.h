@@ -50,7 +50,7 @@ inline int defaultSize(ReturnType type) {
         case ReturnType::BOOL:
             return 4;
         case ReturnType::INT_ARRAY:
-            return 400;
+            return 200;
         default:
             throw std::invalid_argument(to_string(type));
     }
