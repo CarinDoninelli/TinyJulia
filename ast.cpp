@@ -549,6 +549,7 @@ ReturningContext FunctionCall::evaluate(Scope *scope) {
         for (auto argument : this->arguments) { // NOLINT
             auto context = argument->evaluate(scope);
             argumentTypes.push_back(context.type);
+            context.place = ebp(scope->newTempSpace());
             contexts.push_back(context);
         }
 

@@ -1,41 +1,44 @@
 #include <iostream>
+#include <vector>
 #include "ast.h"
 
 using namespace std;
 
 int main() {
     auto expr = new Block(vector<Expression *> {
-            new Declaration{
-                    "arr",
-                    ReturnType::INT_ARRAY,
-                    new Array(vector<Expression *> {
-                            new AddExpression{
-                                    new IntExpression{ 1 },
-                                    new IntExpression{ 5 }
-                            },
-                            new IntExpression{ 2 },
-                            new IntExpression{ 3 },
+            new FunctionDeclaration{
+                    "f",
+                    vector<FunctionDeclaration::Param>{
+                            FunctionDeclaration::Param{ "a", ReturnType::INTEGER },
+                            FunctionDeclaration::Param{ "b", ReturnType::INTEGER }
+                    },
+                    ReturnType::INTEGER,
+                    new Block(vector<Expression *>{
+                            new Return{
+                                    new AddExpression{
+                                            new IdExpression{ "a" },
+                                            new IdExpression{ "b" }
+                                    }
+                            }
                     })
-            },
-            new ArraySet{
-                    "arr",
-                    new IntExpression{ 1 },
-                    new IntExpression{ 50 }
             },
 
-            new For{
-                    "x",
-                    new IntExpression{ 0 },
-                    new IntExpression{ 3 },
-                    new Block(vector<Expression *> {
-                            new Print(vector<Expression *>{
-                                    new ArrayAccess{
-                                            "arr",
-                                            new IdExpression{ "x" }
-                                    }
-                            })
-                    })
-            }
+            new Print(vector<Expression*>{
+                    new FunctionCall{
+                            "f",
+                            vector<Expression*>{
+                                new AddExpression{
+                                        new IntExpression{ 1 },
+                                        new IntExpression{ 3 }
+                                },
+                                new AddExpression{
+                                        new IntExpression{ 5 },
+                                        new IntExpression{ 5 }
+                                }
+                            }
+                    }
+            })
+
     });
 
 //     auto expr = new Block(list<Expression *> {

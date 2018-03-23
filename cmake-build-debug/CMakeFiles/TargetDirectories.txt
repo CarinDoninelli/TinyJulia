@@ -1,0 +1,3 @@
+/Users/eherrera/Documents/UNITEC/TinyJuliaPP/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/eherrera/Documents/UNITEC/TinyJuliaPP/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/eherrera/Documents/UNITEC/TinyJuliaPP/cmake-build-debug/CMakeFiles/TinyJuliaPP.dir
