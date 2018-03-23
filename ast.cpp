@@ -57,14 +57,14 @@ ReturningContext IdExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext AddExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -77,14 +77,14 @@ ReturningContext AddExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext SubExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -97,14 +97,14 @@ ReturningContext SubExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext MulExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -120,14 +120,14 @@ ReturningContext MulExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext DivExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -143,7 +143,8 @@ ReturningContext DivExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext AndExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
@@ -153,7 +154,6 @@ ReturningContext AndExpression::evaluate(Scope *scope) {
         auto falseLabel = newLabel();
         auto endLabel = newLabel();
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -176,7 +176,8 @@ ReturningContext AndExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext OrExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
@@ -187,7 +188,6 @@ ReturningContext OrExpression::evaluate(Scope *scope) {
         auto falseLabel = newLabel();
         auto endLabel = newLabel();
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -211,14 +211,14 @@ ReturningContext OrExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext XorExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
         checkType(rightContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -231,14 +231,14 @@ ReturningContext XorExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext LessThanExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -254,14 +254,14 @@ ReturningContext LessThanExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext GreaterThanExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -277,14 +277,14 @@ ReturningContext GreaterThanExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext LessThanOrEqualExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -300,14 +300,14 @@ ReturningContext LessThanOrEqualExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext GreaterThanOrEqualExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -323,14 +323,14 @@ ReturningContext GreaterThanOrEqualExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext EqualExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -346,14 +346,14 @@ ReturningContext EqualExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext NotEqualExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -369,14 +369,14 @@ ReturningContext NotEqualExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext LeftShiftExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -390,14 +390,14 @@ ReturningContext LeftShiftExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext RightShiftExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -411,14 +411,14 @@ ReturningContext RightShiftExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext ModExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -433,14 +433,14 @@ ReturningContext ModExpression::evaluate(Scope *scope) {
 }
 
 ReturningContext PowExpression::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
         checkType(leftContext.type, ReturnType::INTEGER);
         checkType(rightContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << leftContext.code
              << rightContext.code
@@ -543,13 +543,14 @@ vector<ReturnType> FunctionDeclaration::paramTypeList() {
 }
 
 ReturningContext FunctionCall::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         vector<ReturnType> argumentTypes;
         vector<ReturningContext> contexts;
         for (auto argument : this->arguments) { // NOLINT
             auto context = argument->evaluate(scope);
             argumentTypes.push_back(context.type);
-            context.place = ebp(scope->newTempSpace());
+            // context.place = ebp(scope->newTempSpace());
             contexts.push_back(context);
         }
 
@@ -564,7 +565,6 @@ ReturningContext FunctionCall::evaluate(Scope *scope) {
             code << "push " << context.place << endl;
         }
 
-        auto place = scope->newTempSpace();
         code << "call " << function.label << "\t; call " << functionName << endl
              << "add esp, " << to_string(arguments.size() * 8) << endl
              << "mov " << ebp(place) << ", eax" << endl;
@@ -713,11 +713,11 @@ ReturningContext UnaryMinus::evaluate(Scope *scope) {
 }
 
 ReturningContext Negation::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto context = expression->evaluate(scope);
         checkType(context.type, ReturnType::BOOL);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << context.code
              << "mov eax, " << context.place << endl
@@ -733,11 +733,11 @@ ReturningContext Negation::evaluate(Scope *scope) {
 }
 
 ReturningContext BitNegation::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto context = expression->evaluate(scope);
         checkType(context.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << context.code
              << "mov eax, " << context.place << endl
@@ -749,7 +749,8 @@ ReturningContext BitNegation::evaluate(Scope *scope) {
 }
 
 ReturningContext ArrayAccess::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto varPlace = scope->find(varName);
         checkType(varPlace->type, vector<ReturnType>{ ReturnType::INT_ARRAY, ReturnType::STRING });
 
@@ -757,7 +758,6 @@ ReturningContext ArrayAccess::evaluate(Scope *scope) {
 
         auto indexContext = index->evaluate(scope);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << indexContext.code
              << "mov eax, " << indexContext.place << endl
@@ -769,7 +769,8 @@ ReturningContext ArrayAccess::evaluate(Scope *scope) {
 }
 
 ReturningContext ArraySet::evaluate(Scope *scope) {
-    return scope->withSnapshot([this, scope]() {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
         auto varPlace = scope->find(varName);
         checkType(varPlace->type, vector<ReturnType>{ ReturnType::INT_ARRAY, ReturnType::STRING });
 
@@ -780,7 +781,6 @@ ReturningContext ArraySet::evaluate(Scope *scope) {
         auto expressionContext = expression->evaluate(scope);
         checkType(expressionContext.type, ReturnType::INTEGER);
 
-        auto place = scope->newTempSpace();
         stringstream code;
         code << indexContext.code
              << expressionContext.code

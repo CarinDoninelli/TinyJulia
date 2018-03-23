@@ -11,6 +11,8 @@
         "__string": "cpp",
         "deque": "cpp",
         "memory": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "regex": "cpp",
+        "system_error": "cpp"
     }
 }
