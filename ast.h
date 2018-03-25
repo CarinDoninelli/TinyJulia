@@ -160,7 +160,10 @@ struct FunctionCall : public Expression {
     vector<Expression *> arguments;
 
     FunctionCall(string functionName, vector<Expression *> arguments) :
-            functionName(move(functionName)), arguments(move(arguments)) {}
+            functionName(move(functionName)), arguments(move(arguments)) {
+        
+        reverse(this->arguments.begin(), this->arguments.end());
+    }
 
     ReturningContext evaluate(Scope *scope) override;
 };

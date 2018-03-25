@@ -14,6 +14,10 @@ int main() {
                     },
                     ReturnType::INTEGER,
                     new Block(vector<Expression *>{
+                           new Print(vector<Expression*>{
+                                    new StringExpression{ "\"a\", 10, 0" },
+                                    new IdExpression{ "a" }
+                            }),
                             new Return{
                                     new AddExpression{
                                             new IdExpression{ "a" },
@@ -22,23 +26,19 @@ int main() {
                             }
                     })
             },
-
-            new Print(vector<Expression*>{
-                    new FunctionCall{
-                            "f",
-                            vector<Expression*>{
-                                new AddExpression{
-                                        new IntExpression{ 1 },
-                                        new IntExpression{ 3 }
-                                },
-                                new AddExpression{
-                                        new IntExpression{ 5 },
-                                        new IntExpression{ 5 }
-                                }
-                            }
+            new FunctionCall{
+                    "f",
+                    vector<Expression*>{
+                        new AddExpression{
+                                new IntExpression{ 1 },
+                                new IntExpression{ 3 }
+                        },
+                        new AddExpression{
+                                new IntExpression{ 5 },
+                                new IntExpression{ 5 }
+                        }
                     }
-            })
-
+            }
     });
 
 //     auto expr = new Block(list<Expression *> {
