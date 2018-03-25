@@ -9,6 +9,7 @@
     #include <iostream>
 
     #include "ast.h"
+    #include "types.h"
 
     using namespace std;
 
@@ -31,7 +32,8 @@
     int num_t;
     bool bool_t;
     Expression *expression_t;
-    vector<Expression *> expression_list_t;
+    vector<Expression *> *expression_list_t;
+    ReturnType type_t;
 }
 
 %token<num_t> TK_NUM
@@ -47,10 +49,62 @@
 %token TK_AND TK_OR
 %token TK_RSHIFT TK_LSHIFT
 
+%type<expression_t> program
+%type<type_t> type
+%type<expression_list_t> statement_list print_argument_list
+%type<expression_t> unending_block ending_block
+%type<expression_t> statement print_statement, declaration_statement
+%type<expression_t> print_argument 
+%type<expression_t> expression
+
 %expect 0
 
 %%
 
+program: unending_block  { $$ = $1; }
+;
 
+new_line: new_line TK_EOL
+    | TK_EOL
+;
+
+optEOL: new_line
+    | %empty
+;
+
+unending_block: statement_list { $$ = new Block(*$1); }
+;
+
+ending_block: unending_block KW_END { $$ = $1; }
+;
+
+statement_list: statement_list new_line statement { $$ = $1; $$->push_back($3); }
+        | statement { $$ = new vector<Expression *>{ $1 }; }
+;
+
+statement: print_statement  { $$ = $1; }
+    | declaration_statement { $$ = $1; }
+;
+
+print_statement: KW_PRINTLN '(' print_argument_list ')' { $$ = new Print{ *$3 }; }
+;
+
+print_argument_list: print_argument_list ',' print_argument { $$ = $1; $$->push_back($3); }
+        | print_argument { $$ = new vector<Expression*>; $$->push_back($1); }
+;
+
+print_argument: STRING_LITERAL { $$ = new StringExpression{ *$1 } }
+        | expression { $$ = $1; }
+;
+
+declaration_statement: TK_ID TK_DOUBLE_COLON type '=' expression { $$ = new Declaration{ *$1, *$3, $5 }; }
+;
+
+type: KW_INT  { $$ = ReturnType::INTEGER; }
+    | KW_BOOL { $$ = ReturnType::BOOL; }
+;
+
+expression: {  }
+;
 
 %%

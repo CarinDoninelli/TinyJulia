@@ -11,7 +11,6 @@
 
 
 #include <string>
-#include <list>
 #include <vector>
 #include "ReturningContext.h"
 #include "scope.h"
@@ -125,10 +124,10 @@ struct Declaration : public Expression {
 };
 
 struct Assignment : public Expression {
-    string varName;
+    Expression *location;
     Expression *expression;
 
-    Assignment(string varName, Expression *expression) : varName(move(varName)), expression(expression) {}
+    Assignment(Expression *location, Expression *expression) : location(location), expression(expression) {}
 
     ReturningContext evaluate(Scope *scope) override;
 };

@@ -493,15 +493,16 @@ ReturningContext Assignment::evaluate(Scope *scope) {
     return scope->withSnapshot([this, scope]() {
         auto context = expression->evaluate(scope);
 
-        auto variable = scope->find(varName);
-        checkType(context.type, variable->type);
+        auto locationContext = location->evaluate(scope);
+        checkType(context.type, locationContext.type);
 
         stringstream code;
         code << context.code
+             << locationContext.code
              << "mov eax, " << context.place << endl
-             << "mov " << ebp(variable->offset) << ", eax" << "\t; " << varName << endl;
+             << "mov " << locationContext.place << ", eax" << endl;
 
-        return ReturningContext { ebp(variable->offset), variable->type, code.str() };
+        return ReturningContext { locationContext.place, locationContext.type, code.str() };
     });
 }
 
