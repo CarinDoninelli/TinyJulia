@@ -104,6 +104,10 @@ DEFINE_BINARY_EXPR(RightShift);
 
 DEFINE_BINARY_EXPR(Mod);
 
+DEFINE_BINARY_EXPR(BitwiseOr);
+
+DEFINE_BINARY_EXPR(BitwiseAnd);
+
 struct Block : public Expression {
     vector<Expression *> statements;
 

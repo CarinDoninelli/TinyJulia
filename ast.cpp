@@ -454,6 +454,46 @@ ReturningContext PowExpression::evaluate(Scope *scope) {
     });
 }
 
+ReturningContext BitwiseOrExpression::evaluate(Scope *scope) {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
+        checkType(rightContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
+
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "or eax, " << rightContext.place << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+
+        return ReturningContext { ebp(place), ReturnType::INTEGER, code.str() };
+    });
+}
+
+ReturningContext BitwiseAndExpression::evaluate(Scope *scope) {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
+        auto leftContext = left->evaluate(scope);
+        auto rightContext = right->evaluate(scope);
+
+        checkType(leftContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
+        checkType(rightContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
+
+        stringstream code;
+        code << leftContext.code
+             << rightContext.code
+             << "mov eax, " << leftContext.place << endl
+             << "and eax, " << rightContext.place << endl
+             << "mov " << ebp(place) << ", eax" << endl;
+
+        return ReturningContext { ebp(place), ReturnType::INTEGER, code.str() };
+    });
+}
+
 ReturningContext Block::evaluate(Scope *scope) {
     return scope->withSnapshot([this, scope]() {
         stringstream code;
