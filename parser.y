@@ -97,11 +97,11 @@ print_argument: STRING_LITERAL { $$ = new StringExpression{ *$1 } }
         | expression { $$ = $1; }
 ;
 
-declaration_statement: TK_ID TK_DOUBLE_COLON type '=' expression { $$ = new Declaration{ *$1, *$3, $5 }; }
+declaration_statement: TK_ID type '=' expression { $$ = new Declaration{ *$1, *$2, $4 }; }
 ;
 
-type: KW_INT  { $$ = ReturnType::INTEGER; }
-    | KW_BOOL { $$ = ReturnType::BOOL; }
+type: TK_DOUBLE_COLON KW_INT  { $$ = ReturnType::INTEGER; }
+    | TK_DOUBLE_COLON KW_BOOL { $$ = ReturnType::BOOL; }
 ;
 
 expression: {  }
