@@ -90,11 +90,11 @@ print_argument_list: print_argument_list ',' print_argument { $$ = $1; $$->push_
         | print_argument                                    { $$ = new vector<Expression*>; $$->push_back($1); }
 ;
 
-print_argument: STRING_LITERAL { $$ = new StringExpression{ *$1 } }
+print_argument: STRING_LITERAL { $$ = new StringExpression{ *$1 }; }
         | expression           { $$ = $1; }
 ;
 
-declaration_statement: TK_ID type '=' expression { $$ = new Declaration{ *$1, *$2, $4 }; }
+declaration_statement: TK_ID type '=' expression { $$ = new Declaration{ *$1, $2, $4 }; }
 ;
 
 type: TK_DOUBLE_COLON KW_INT  { $$ = ReturnType::INTEGER; }
@@ -107,7 +107,7 @@ expression: assignment { $$ = $1; }
 assignment: postfix '=' assignment      { $$ = new Assignment{ $1, $3 }; }
     | postfix OP_PLUS_ASSIGN assignment { $$ = new Assignment{ $1, new AddExpression{ $1, $3 } };  }
     | postfix OP_SUB_ASSIGN assignment  { $$ = new Assignment{ $1, new SubExpression{ $1, $3 } };  }
-    | postfix OP_MUL_ASSIGN assignment  { $$ = new Assignment{ $1, new MultExpression{ $1, $3 } ;} }
+    | postfix OP_MUL_ASSIGN assignment  { $$ = new Assignment{ $1, new MulExpression{ $1, $3 } };  }
     | postfix OP_DIV_ASSIGN assignment  { $$ = new Assignment{ $1, new DivExpression{ $1, $3 } };  }
     | postfix OP_MOD_ASSIGN assignment  { $$ = new Assignment{ $1, new ModExpression{ $1, $3 } };  }
     | postfix OP_POW_ASSIGN assignment  { $$ = new Assignment{ $1, new PowExpression{ $1, $3 } };  }
@@ -139,7 +139,7 @@ relational: relational OP_EQ arithmetic { $$ = new EqualExpression{ $1, $3 };   
     | relational '>' arithmetic         { $$ = new GreaterThanExpression{ $1, $3 };        }
     | relational '<' arithmetic         { $$ = new LessThanExpression{ $1, $3 };           }
     | relational OP_GTE arithmetic      { $$ = new GreaterThanOrEqualExpression{ $1, $3 }; }
-    | relational OP_LTE arithmetic      { $$ = new LessThanOrEqualExpressio{ $1, $3 };     }
+    | relational OP_LTE arithmetic      { $$ = new LessThanOrEqualExpression{ $1, $3 };    }
     | arithmetic                        { $$ = $1; }
 ;
 
@@ -148,7 +148,7 @@ arithmetic: arithmetic '-' term { $$ = new SubExpression($1, $3); }
     | term                      { $$ = $1; }
 ;
 
-term: term '*' exponent { $$ = new MultExpression($1, $3); }
+term: term '*' exponent { $$ = new MulExpression($1, $3);  }
     | term '/' exponent { $$ = new DivExpression($1, $3);  }
     | term '%' exponent { $$ = new ModExpression($1, $3);  }
     | exponent { $$ = $1; }
@@ -166,7 +166,7 @@ unary: '-' unary { $$ = new Negation($2); }
 factor: TK_NUM                  { $$ = new IntExpression($1); }
     |   BOOL_LITERAL            { $$ = new BoolExpression($1); }
     |   '[' expression_list ']' { $$ = new Array(*$2); }
-    |   TK_ID                   { $$ = new IdEpression(*$1); }
+    |   TK_ID                   { $$ = new IdExpression(*$1); }
     |   '(' expression ')'      { $$ = $2; }
 ;
 

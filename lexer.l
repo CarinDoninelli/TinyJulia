@@ -1,4 +1,4 @@
-d %option noyywrap
+%option noyywrap
 %option yylineno
 %option nodefault
 

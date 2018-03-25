@@ -342,6 +342,9 @@ void yyfree ( void *  );
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
+
+#define yywrap() (/*CONSTCOND*/1)
+#define YY_SKIP_YYWRAP
 typedef flex_uint8_t YY_CHAR;
 
 FILE *yyin = NULL, *yyout = NULL;
@@ -560,8 +563,8 @@ char *yytext;
 
 using namespace std;
 
-#line 563 "lexer.cpp"
-#line 564 "lexer.cpp"
+#line 566 "lexer.cpp"
+#line 567 "lexer.cpp"
 
 #define INITIAL 0
 
@@ -780,7 +783,7 @@ YY_DECL
 	{
 #line 20 "lexer.l"
 
-#line 783 "lexer.cpp"
+#line 786 "lexer.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1177,7 +1180,7 @@ YY_RULE_SETUP
 #line 95 "lexer.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1180 "lexer.cpp"
+#line 1183 "lexer.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
