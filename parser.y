@@ -93,7 +93,8 @@ statement: print_statement  { $$ = $1; }
 while: KW_WHILE expression unending_block KW_END { $$ = new While($2, $3); }
 ;
 
-print_statement: KW_PRINTLN TK_LPAREN print_argument_list TK_RPAREN { auto args = $3; args->push_back(new StringExpression("\"\", 10, 0")) $$ = new Print{ *$3 }; }
+print_statement: KW_PRINTLN TK_LPAREN print_argument_list TK_RPAREN { $$ = new Print{ *$3, true }; }
+        | KW_PRINT TK_LPAREN print_argument_list TK_RPAREN          { $$ = new Print{ *$3, false }; }
 ;
 
 print_argument_list: print_argument_list ',' print_argument { $$ = $1; $$->push_back($3); }

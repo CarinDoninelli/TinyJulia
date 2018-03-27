@@ -191,8 +191,9 @@ struct Return : public Expression {
 
 struct Print : public Expression {
     vector<Expression *> expressions;
+    bool addNewLine;
 
-    explicit Print(vector<Expression *> expressions) : expressions(move(expressions)) {}
+    Print(vector<Expression *> expressions, bool addNewLine) : expressions(move(expressions)), addNewLine(addNewLine) {}
 
     ReturningContext evaluate(Scope *scope) override;
 };

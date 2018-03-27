@@ -10,6 +10,7 @@
 vector<FunctionMeta> FunctionCode::codeBlocks;
 vector<string> FunctionCode::externFunctions{
         "printf",
+        "putchar",
         "pow_helper_function"
 };
 
@@ -50,7 +51,7 @@ string FunctionCode::externFunctionCode() {
 }
 
 map<string, string> *LiteralCode::literals = new map<string, string> { // NOLINT
-        pair<string, string> { "\"%d\", 10, 0", "print_fmt_int" }
+        pair<string, string> { "\"%d\", 0", "print_fmt_int" }
 };
 
 
