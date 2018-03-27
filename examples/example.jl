@@ -1,8 +1,10 @@
 
-x::Int = 10
+x::Int = 2
 
-while x > 0
-    println(x)
-    y::Int = x - 1
-    x = y
+if x == 10
+    println("\"equal\", 0")
+elseif x > 10
+    println(2)
+else
+    println(0)
 end

@@ -54,7 +54,7 @@
 %type<expression_list_t> statement_list print_argument_list expression_list
 %type<expression_t> unending_block
 %type<expression_t> statement print_statement declaration_statement
-%type<expression_t> print_argument while
+%type<expression_t> print_argument while if else
 %type<expression_t> expression
 %type<expression_t> assignment postfix 
 %type<expression_t> condition_or condition_and
@@ -65,7 +65,7 @@
 
 %%
 
-program: opEol statement_list  { expression = new Block(*$2); }
+program: opEol statement_list opEol  { expression = new Block(*$2); }
 ;
 
 new_line: new_line TK_EOL
@@ -88,6 +88,15 @@ statement: print_statement  { $$ = $1; }
     | declaration_statement { $$ = $1; }
     | assignment            { $$ = $1; }
     | while                 { $$ = $1; }
+    | if                    { $$ = $1; }
+;
+
+if: KW_IF expression unending_block else { $$ = new If($2, $3, $4); }
+;
+
+else: KW_ELIF expression unending_block else { $$ = new If($2, $3, $4); }
+    | KW_ELSE unending_block KW_END          { $$ = $2; }
+    | KW_END                                 { $$ = nullptr; }
 ;
 
 while: KW_WHILE expression unending_block KW_END { $$ = new While($2, $3); }

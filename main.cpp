@@ -29,6 +29,10 @@ int main(int argc, char *argv[]) {
 	yylineno = 1;
 	yyparse();
 
+    if (expression == nullptr) {
+        exit(-1);
+    }
+
     auto result = expression->evaluate(new Scope());
 
     cout << "global main" << endl
