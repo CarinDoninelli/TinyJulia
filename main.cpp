@@ -4,61 +4,32 @@
 
 using namespace std;
 
-int main() {
-    auto expr = new Block(vector<Expression *> {
-            new FunctionDeclaration{
-                    "f",
-                    vector<FunctionDeclaration::Param>{
-                            FunctionDeclaration::Param{ "a", ReturnType::INTEGER },
-                            FunctionDeclaration::Param{ "b", ReturnType::INTEGER }
-                    },
-                    ReturnType::INTEGER,
-                    new Block(vector<Expression *>{
-                           new Print(vector<Expression*>{
-                                    new StringExpression{ "\"a\", 10, 0" },
-                                    new IdExpression{ "a" }
-                            }),
-                            new Return{
-                                    new AddExpression{
-                                            new IdExpression{ "a" },
-                                            new IdExpression{ "b" }
-                                    }
-                            }
-                    })
-            },
-            new FunctionCall{
-                    "f",
-                    vector<Expression*>{
-                        new AddExpression{
-                                new IntExpression{ 1 },
-                                new IntExpression{ 3 }
-                        },
-                        new AddExpression{
-                                new IntExpression{ 5 },
-                                new IntExpression{ 5 }
-                        }
-                    }
-            }
-    });
 
-//     auto expr = new Block(list<Expression *> {
-//             new Declaration{ "condition", ReturnType::BOOL, new BoolExpression{ false }},
-//             new If{
-//                     new IdExpression{ "condition" },
-//                     new Block(list<Expression *> {
-//                             new Print(vector<Expression *> {
-//                                     new StringExpression{ "\"Is True!\", 10, 0" }
-//                             })
-//                     }),
-//                     new Block(list<Expression *> {
-//                             new Print(vector<Expression *> {
-//                                     new StringExpression{ "\"is false!\", 10, 0" }
-//                             })
-//                     })
-//             }
-//     });
+extern FILE *yyin;
+extern int yylineno;
+extern int errors;
+extern Expression *expression;
 
-    auto result = expr->evaluate(new Scope());
+int yylex();
+int yyparse();
+
+int main(int argc, char *argv[]) {
+
+    if (argc != 2) {
+		fprintf(stderr, "Usage: %s <input file>\n", argv[0]);
+		return 1;
+	}
+
+	yyin = fopen(argv[1], "rb");
+	if (yyin == NULL) {
+		fprintf(stderr, "Cannot open input file '%s'\n", argv[1]);
+		return 2;
+	}
+	errors = 0;
+	yylineno = 1;
+	yyparse();
+
+    auto result = expression->evaluate(new Scope());
 
     cout << "global main" << endl
          << FunctionCode::externFunctionCode() << endl

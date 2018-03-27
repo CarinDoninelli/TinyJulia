@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <ostream>
 #include "ReturningContext.h"
 #include "scope.h"
 
@@ -20,6 +21,8 @@ using namespace std;
 class Expression {
 public:
     virtual ReturningContext evaluate(Scope *scope) = 0;
+
+    friend ostream &operator<<(ostream &os, const Expression &expression);
 };
 
 struct IntExpression : public Expression {
@@ -28,6 +31,9 @@ struct IntExpression : public Expression {
     explicit IntExpression(int value) : value(value) {}
 
     ReturningContext evaluate(Scope *scope) override;
+
+    friend ostream &operator<<(ostream &os, const IntExpression &expression);
+
 };
 
 struct StringExpression : public Expression {
@@ -36,6 +42,8 @@ struct StringExpression : public Expression {
     explicit StringExpression(string value) : value(move(value)) {}
 
     ReturningContext evaluate(Scope *scope) override;
+
+    friend ostream &operator<<(ostream &os, const StringExpression &expression);
 };
 
 struct Array : public Expression {
@@ -44,6 +52,8 @@ struct Array : public Expression {
     explicit Array( vector<Expression *> values) : values(move(values)) {}
 
     ReturningContext evaluate(Scope *scope) override;
+
+    friend ostream &operator<<(ostream &os, const Array &array1);
 };
 
 struct BoolExpression : public Expression {

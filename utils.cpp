@@ -5,6 +5,7 @@
 #include "utils.h"
 
 #include <regex>
+#include <sstream>
 
 static int counter = 0;
 
@@ -30,4 +31,11 @@ char *charPtr(const string &str) {
 }
 
 
+std::string joinExpressions(const vector<Expression *> &vector) {
+    stringstream output;
+    for (const auto &item : vector) {
+        output << item << " ";
+    }
+    return output.str();
+}
 

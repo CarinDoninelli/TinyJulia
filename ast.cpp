@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include "ast.h"
+#include <iostream>
 #include "checks.h"
 #include "utils.h"
 
@@ -204,7 +205,7 @@ ReturningContext OrExpression::evaluate(Scope *scope) {
              << "mov eax, 0" << endl
              << endLabel << ":" << endl
              << "movzx eax, al" << endl
-             << "mov " << place << ", eax" << endl;
+             << "mov " << ebp(place) << ", eax" << endl;
 
         return ReturningContext { ebp(place), ReturnType::BOOL, code.str() };
     });
@@ -651,7 +652,7 @@ ReturningContext Print::evaluate(Scope *scope) {
                      << "call printf" << endl
                      << "add esp, 8" << endl;
             }
-        }
+        } 
 
         return ReturningContext { code.str() };
     });
@@ -832,4 +833,28 @@ ReturningContext ArraySet::evaluate(Scope *scope) {
 
         return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
     });
+}
+
+
+
+// streams
+
+
+ostream &operator<<(ostream &os, const Expression &expression) {
+    return os;
+}
+
+ostream &operator<<(ostream &os, const IntExpression &expression) {
+    os << static_cast<const Expression &>(expression) << " value: " << expression.value;
+    return os;
+}
+
+ostream &operator<<(ostream &os, const StringExpression &expression) {
+    os << static_cast<const Expression &>(expression) << " value: " << expression.value;
+    return os;
+}
+
+ostream &operator<<(ostream &os, const Array &array1) {
+    os << static_cast<const Expression &>(array1) << " values: " << joinExpressions(array1.values);
+    return os;
 }

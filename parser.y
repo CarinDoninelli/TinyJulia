@@ -17,6 +17,7 @@
 
     int yylex();
 
+    int errors;
     void yyerror(const char *str)
     {
         printf("Line %d: %s\n", yylineno, str);
@@ -40,7 +41,7 @@
 %token<id_t> TK_ID
 %token<id_t> STRING_LITERAL CHAR_LITERAL
 %token<bool_t> BOOL_LITERAL
-%token KW_IF KW_ELSE KW_WHILE KW_FOR KW_PRINTLN KW_END KW_ELIF KW_PRINT KW_FUNCTION KW_BOOL KW_INT
+%token KW_IF KW_ELSE KW_WHILE KW_FOR KW_PRINTLN KW_END KW_ELIF KW_PRINT KW_FUNCTION KW_BOOL KW_INT KW_ARRAY
 %token KW_RETURN
 %token TK_EOL
 %token TK_LPAREN TK_RPAREN TK_LBRACK TK_RBRACK TK_DOUBLE_COLON TK_LBRACE TK_RBRACE
@@ -49,7 +50,6 @@
 %token TK_AND TK_OR
 %token TK_RSHIFT TK_LSHIFT
 
-%type<expression_t> program
 %type<type_t> type
 %type<expression_list_t> statement_list print_argument_list expression_list
 %type<expression_t> unending_block
@@ -65,7 +65,7 @@
 
 %%
 
-program: unending_block  { $$ = $1; }
+program: unending_block  { expression = $1; }
 ;
 
 new_line: new_line TK_EOL
@@ -81,9 +81,10 @@ statement_list: statement_list new_line statement { $$ = $1; $$->push_back($3); 
 
 statement: print_statement  { $$ = $1; }
     | declaration_statement { $$ = $1; }
+    | assignment            { $$ = $1; }
 ;
 
-print_statement: KW_PRINTLN '(' print_argument_list ')' { $$ = new Print{ *$3 }; }
+print_statement: KW_PRINTLN TK_LPAREN print_argument_list TK_RPAREN { $$ = new Print{ *$3 }; }
 ;
 
 print_argument_list: print_argument_list ',' print_argument { $$ = $1; $$->push_back($3); }
@@ -97,8 +98,9 @@ print_argument: STRING_LITERAL { $$ = new StringExpression{ *$1 }; }
 declaration_statement: TK_ID type '=' expression { $$ = new Declaration{ *$1, $2, $4 }; }
 ;
 
-type: TK_DOUBLE_COLON KW_INT  { $$ = ReturnType::INTEGER; }
-    | TK_DOUBLE_COLON KW_BOOL { $$ = ReturnType::BOOL; }
+type: TK_DOUBLE_COLON KW_INT   { $$ = ReturnType::INTEGER; }
+    | TK_DOUBLE_COLON KW_BOOL  { $$ = ReturnType::BOOL; }
+    | TK_DOUBLE_COLON KW_ARRAY { $$ = ReturnType::INT_ARRAY; }
 ;
 
 expression: assignment { $$ = $1; }
@@ -155,24 +157,25 @@ term: term '*' exponent { $$ = new MulExpression($1, $3);  }
 ;
 
 exponent: exponent '^' unary { $$ = new PowExpression($1, $3); }
-    | unary { $$ = $1; }
+    | unary                  { $$ = $1; }
 ;
 
-unary: '-' unary { $$ = new Negation($2); }
+unary: '-' unary { $$ = new UnaryMinus($2); }
     |  '!' unary { $$ = new Negation($2); }
     |  postfix   { $$ = $1; }
 ;
 
-factor: TK_NUM                  { $$ = new IntExpression($1); }
-    |   BOOL_LITERAL            { $$ = new BoolExpression($1); }
-    |   '[' expression_list ']' { $$ = new Array(*$2); }
-    |   TK_ID                   { $$ = new IdExpression(*$1); }
-    |   '(' expression ')'      { $$ = $2; }
+factor: TK_NUM                               { $$ = new IntExpression($1); }
+    |   BOOL_LITERAL                         { $$ = new BoolExpression($1); }
+    |   TK_LBRACK expression_list TK_RBRACK  { $$ = new Array(*$2); }
+    |   TK_ID                                { $$ = new IdExpression(*$1); }
+    |   TK_ID TK_LBRACK expression TK_RBRACK { $$ = new ArrayAccess(*$1, new SubExpression($3, new IntExpression(1))); }
+    |   TK_LPAREN expression TK_RPAREN       { $$ = $2; }
 ;
 
-postfix: factor                     { $$ = $1; }
-    | TK_ID '(' expression_list ')' { $$ = new FunctionCall{ *$1, *$3 }; }
-    | TK_ID '(' ')'                 { $$ = new FunctionCall{ *$1, vector<Expression *>() }; }
+postfix: factor                                 { $$ = $1; }
+    | TK_ID TK_LPAREN expression_list TK_RPAREN { $$ = new FunctionCall{ *$1, *$3 }; }
+    | TK_ID TK_LPAREN TK_RPAREN                 { $$ = new FunctionCall{ *$1, vector<Expression *>() }; }
 ;
 
 expression_list: expression_list ',' expression { $$ = $1; $$->push_back($3); }
