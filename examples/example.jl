@@ -1,7 +1,8 @@
-x::Bool = true
-y::Bool = false
 
-t::Array{Int} = [1,2,3]
-r::Int = t[1]
+x::Int = 10
 
-println(r)
+while x > 0
+    println(x)
+    y::Int = x - 1
+    x = y
+end

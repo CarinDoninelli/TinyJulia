@@ -686,7 +686,7 @@ ReturningContext If::evaluate(Scope *scope) {
 }
 
 ReturningContext While::evaluate(Scope *scope) {
-    scope = new Scope(scope);
+    // scope = new Scope(scope);
     return scope->withSnapshot([this, scope]() {
         auto conditionContext = condition->evaluate(scope);
         checkType(conditionContext.type, ReturnType::BOOL);

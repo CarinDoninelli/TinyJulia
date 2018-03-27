@@ -54,7 +54,7 @@
 %type<expression_list_t> statement_list print_argument_list expression_list
 %type<expression_t> unending_block
 %type<expression_t> statement print_statement declaration_statement
-%type<expression_t> print_argument 
+%type<expression_t> print_argument while
 %type<expression_t> expression
 %type<expression_t> assignment postfix 
 %type<expression_t> condition_or condition_and
@@ -65,14 +65,19 @@
 
 %%
 
-program: unending_block  { expression = $1; }
+program: opEol statement_list  { expression = new Block(*$2); }
 ;
 
 new_line: new_line TK_EOL
     | TK_EOL
+    | ';'
 ;
 
-unending_block: statement_list { $$ = new Block(*$1); }
+opEol: new_line
+    | %empty
+;
+
+unending_block: TK_EOL opEol statement_list opEol { $$ = new Block(*$3); }
 ;
 
 statement_list: statement_list new_line statement { $$ = $1; $$->push_back($3); }
@@ -82,9 +87,13 @@ statement_list: statement_list new_line statement { $$ = $1; $$->push_back($3); 
 statement: print_statement  { $$ = $1; }
     | declaration_statement { $$ = $1; }
     | assignment            { $$ = $1; }
+    | while                 { $$ = $1; }
 ;
 
-print_statement: KW_PRINTLN TK_LPAREN print_argument_list TK_RPAREN { $$ = new Print{ *$3 }; }
+while: KW_WHILE expression unending_block KW_END { $$ = new While($2, $3); }
+;
+
+print_statement: KW_PRINTLN TK_LPAREN print_argument_list TK_RPAREN { auto args = $3; args->push_back(new StringExpression("\"\", 10, 0")) $$ = new Print{ *$3 }; }
 ;
 
 print_argument_list: print_argument_list ',' print_argument { $$ = $1; $$->push_back($3); }
