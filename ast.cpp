@@ -656,7 +656,7 @@ ReturningContext Print::evaluate(Scope *scope) {
 
         if (addNewLine) {
             code << "mov edi, 10" << endl
-                 << "call putchar" << endl
+                 << "call putchar" << endl;
         }
 
         return ReturningContext { code.str() };
