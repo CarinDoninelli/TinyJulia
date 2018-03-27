@@ -523,7 +523,7 @@ ReturningContext Declaration::evaluate(Scope *scope) {
 
         if (!context.place.empty()) {
             code << "mov eax, " << context.place << endl
-                 << "mov " << newVariablePlace << ", eax" << "\t; " << varName << "::" << to_string(type) << endl;
+                 << "mov " << newVariablePlace << ", eax" << "\t\t; " << varName << "::" << to_string(type) << endl;
         }
 
         return ReturningContext { newVariablePlace, type, code.str() };
@@ -553,7 +553,7 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
         auto label = newLabel();
 
         stringstream code;
-        code << label << ":" << "\t; decl " << name << endl
+        code << label << ":" << "\t\t; decl " << name << endl
              << "push ebp" << endl
              << "mov ebp, esp" << endl;
 
@@ -565,7 +565,7 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
 
         code << body->evaluate(functionScope).code;
         if (type != ReturnType::UNIT) {
-            code << "ud2" << "\t; End of function reached without return." << endl;
+            code << "ud2" << "\t\t; End of function reached without return." << endl;
         }
         code << "mov eax, 0" << endl
              << "leave" << endl
@@ -607,7 +607,7 @@ ReturningContext FunctionCall::evaluate(Scope *scope) {
             code << "push " << context.place << endl;
         }
 
-        code << "call " << function.label << "\t; call " << functionName << endl
+        code << "call " << function.label << "\t\t; call " << functionName << endl
              << "add esp, " << to_string(arguments.size() * 8) << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
@@ -679,7 +679,7 @@ ReturningContext If::evaluate(Scope *scope) {
         stringstream code;
         code << conditionContext.code
              << "mov eax, " << conditionContext.place << endl
-             << "cmp eax, 0" << "\t; if { true: " << trueLabel << ", false: " << falseLabel << " }" << endl
+             << "cmp eax, 0" << "\t\t; if { true: " << trueLabel << ", false: " << falseLabel << " }" << endl
              << "je " << falseLabel << endl
              << bodyContext.code
              << "jmp " << trueLabel << endl
@@ -703,14 +703,14 @@ ReturningContext While::evaluate(Scope *scope) {
         auto endWhileLabel = newLabel();
 
         stringstream code;
-        code << whileLabel << ":" << "\t; while { end: " << endWhileLabel << "}" << endl
+        code << whileLabel << ":" << "\t\t; while { end: " << endWhileLabel << "}" << endl
              << conditionContext.code
              << "mov eax, " << conditionContext.place << endl
              << "cmp eax, 0" << endl
              << "je " << endWhileLabel << endl
              << body->evaluate(scope).code
              << "jmp " << whileLabel << endl
-             << endWhileLabel << ":" << "\t; end of " << whileLabel;
+             << endWhileLabel << ":" << "\t\t; end of " << whileLabel;
 
         return ReturningContext { code.str() };
     });
@@ -736,7 +736,7 @@ ReturningContext For::evaluate(Scope *scope) {
              << upperBoundContext.code
              << "mov eax, " << lowerBoundContext.place << endl
              << "mov " << loopingVariablePlace << ", eax" << endl
-             << forLabel << ":" << "\t; For { end: " << endForLabel << " }" << endl
+             << forLabel << ":" << "\t\t; For { end: " << endForLabel << " }" << endl
              << "mov eax, " << loopingVariablePlace << endl
              << "cmp eax, " << upperBoundContext.place << endl
              << "setl cl" << endl
@@ -745,7 +745,7 @@ ReturningContext For::evaluate(Scope *scope) {
              << body->evaluate(scope).code
              << "inc " << loopingVariablePlace << endl
              << "jmp " << forLabel << endl
-             << endForLabel << ":" << "\t; end of " << forLabel << endl;
+             << endForLabel << ":" << "\t\t; end of " << forLabel << endl;
 
         return ReturningContext{ code.str() };
     });
