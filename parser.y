@@ -54,7 +54,7 @@
 %type<expression_list_t> statement_list print_argument_list expression_list
 %type<expression_t> unending_block
 %type<expression_t> statement print_statement declaration_statement
-%type<expression_t> print_argument while if else
+%type<expression_t> print_argument while if else for
 %type<expression_t> expression
 %type<expression_t> assignment postfix 
 %type<expression_t> condition_or condition_and
@@ -89,6 +89,10 @@ statement: print_statement  { $$ = $1; }
     | assignment            { $$ = $1; }
     | while                 { $$ = $1; }
     | if                    { $$ = $1; }
+    | for                   { $$ = $1; }
+;
+
+for: KW_FOR TK_ID '=' expression ':' expression unending_block KW_END { $$ = new For(*$2, $4, $6, $7); }
 ;
 
 if: KW_IF expression unending_block else { $$ = new If($2, $3, $4); }

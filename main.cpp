@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include "ast.h"
 
 using namespace std;
@@ -21,7 +20,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	yyin = fopen(argv[1], "rb");
-	if (yyin == NULL) {
+	if (yyin == nullptr) {
 		fprintf(stderr, "Cannot open input file '%s'\n", argv[1]);
 		return 2;
 	}

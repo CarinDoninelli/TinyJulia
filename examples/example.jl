@@ -1,10 +1,4 @@
 
-x::Int = 2
-
-if x == 10
-    println("\"equal\", 0")
-elseif x > 10
-    println(2)
-else
-    println(0)
+for x = 1:10
+    println(x)
 end

@@ -717,7 +717,7 @@ ReturningContext While::evaluate(Scope *scope) {
 }
 
 ReturningContext For::evaluate(Scope *scope) {
-    scope = new Scope(scope);
+    // scope = new Scope(scope);
     return scope->withSnapshot([this, scope]() {
         auto lowerBoundContext = lowerBound->evaluate(scope);
         auto upperBoundContext = upperBound->evaluate(scope);
