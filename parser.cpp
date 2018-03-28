@@ -513,7 +513,7 @@ static const yytype_uint8 yyrline[] =
      160,   161,   164,   165,   168,   169,   172,   173,   176,   177,
      180,   181,   182,   183,   184,   185,   186,   189,   190,   191,
      194,   195,   196,   197,   200,   201,   204,   205,   206,   209,
-     210,   211,   212,   213,   214,   217,   218,   219,   222,   223
+     210,   211,   216,   217,   218,   221,   222,   223,   226,   227
 };
 #endif
 
@@ -1856,60 +1856,64 @@ yyreduce:
 
   case 81:
 #line 211 "parser.y" /* yacc.c:1661  */
-    { (yyval.expression_t) = new Array(*(yyvsp[-1].expression_list_t)); }
-#line 1861 "parser.cpp" /* yacc.c:1661  */
+    { 
+                                               auto values = (yyvsp[-1].expression_list_t);
+                                               values->insert(values->begin(), new IntExpression(0));
+                                               (yyval.expression_t) = new Array(*values); 
+                                             }
+#line 1865 "parser.cpp" /* yacc.c:1661  */
     break;
 
   case 82:
-#line 212 "parser.y" /* yacc.c:1661  */
+#line 216 "parser.y" /* yacc.c:1661  */
     { (yyval.expression_t) = new IdExpression(*(yyvsp[0].id_t)); }
-#line 1867 "parser.cpp" /* yacc.c:1661  */
+#line 1871 "parser.cpp" /* yacc.c:1661  */
     break;
 
   case 83:
-#line 213 "parser.y" /* yacc.c:1661  */
-    { (yyval.expression_t) = new ArrayAccess(*(yyvsp[-3].id_t), new SubExpression((yyvsp[-1].expression_t), new IntExpression(1))); }
-#line 1873 "parser.cpp" /* yacc.c:1661  */
+#line 217 "parser.y" /* yacc.c:1661  */
+    { (yyval.expression_t) = new ArrayAccess(*(yyvsp[-3].id_t), (yyvsp[-1].expression_t)); }
+#line 1877 "parser.cpp" /* yacc.c:1661  */
     break;
 
   case 84:
-#line 214 "parser.y" /* yacc.c:1661  */
+#line 218 "parser.y" /* yacc.c:1661  */
     { (yyval.expression_t) = (yyvsp[-1].expression_t); }
-#line 1879 "parser.cpp" /* yacc.c:1661  */
+#line 1883 "parser.cpp" /* yacc.c:1661  */
     break;
 
   case 85:
-#line 217 "parser.y" /* yacc.c:1661  */
+#line 221 "parser.y" /* yacc.c:1661  */
     { (yyval.expression_t) = (yyvsp[0].expression_t); }
-#line 1885 "parser.cpp" /* yacc.c:1661  */
+#line 1889 "parser.cpp" /* yacc.c:1661  */
     break;
 
   case 86:
-#line 218 "parser.y" /* yacc.c:1661  */
+#line 222 "parser.y" /* yacc.c:1661  */
     { (yyval.expression_t) = new FunctionCall{ *(yyvsp[-3].id_t), *(yyvsp[-1].expression_list_t) }; }
-#line 1891 "parser.cpp" /* yacc.c:1661  */
+#line 1895 "parser.cpp" /* yacc.c:1661  */
     break;
 
   case 87:
-#line 219 "parser.y" /* yacc.c:1661  */
+#line 223 "parser.y" /* yacc.c:1661  */
     { (yyval.expression_t) = new FunctionCall{ *(yyvsp[-2].id_t), vector<Expression *>() }; }
-#line 1897 "parser.cpp" /* yacc.c:1661  */
+#line 1901 "parser.cpp" /* yacc.c:1661  */
     break;
 
   case 88:
-#line 222 "parser.y" /* yacc.c:1661  */
+#line 226 "parser.y" /* yacc.c:1661  */
     { (yyval.expression_list_t) = (yyvsp[-2].expression_list_t); (yyval.expression_list_t)->push_back((yyvsp[0].expression_t)); }
-#line 1903 "parser.cpp" /* yacc.c:1661  */
+#line 1907 "parser.cpp" /* yacc.c:1661  */
     break;
 
   case 89:
-#line 223 "parser.y" /* yacc.c:1661  */
+#line 227 "parser.y" /* yacc.c:1661  */
     { (yyval.expression_list_t) = new vector<Expression *>{ (yyvsp[0].expression_t) }; }
-#line 1909 "parser.cpp" /* yacc.c:1661  */
+#line 1913 "parser.cpp" /* yacc.c:1661  */
     break;
 
 
-#line 1913 "parser.cpp" /* yacc.c:1661  */
+#line 1917 "parser.cpp" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2137,4 +2141,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 226 "parser.y" /* yacc.c:1906  */
+#line 230 "parser.y" /* yacc.c:1906  */

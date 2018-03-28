@@ -208,9 +208,13 @@ unary: '-' unary { $$ = new UnaryMinus($2); }
 
 factor: TK_NUM                               { $$ = new IntExpression($1); }
     |   BOOL_LITERAL                         { $$ = new BoolExpression($1); }
-    |   TK_LBRACK expression_list TK_RBRACK  { $$ = new Array(*$2); }
+    |   TK_LBRACK expression_list TK_RBRACK  { 
+                                               auto values = $2;
+                                               values->insert(values->begin(), new IntExpression(0));
+                                               $$ = new Array(*values); 
+                                             }
     |   TK_ID                                { $$ = new IdExpression(*$1); }
-    |   TK_ID TK_LBRACK expression TK_RBRACK { $$ = new ArrayAccess(*$1, new SubExpression($3, new IntExpression(1))); }
+    |   TK_ID TK_LBRACK expression TK_RBRACK { $$ = new ArrayAccess(*$1, $3); }
     |   TK_LPAREN expression TK_RPAREN       { $$ = $2; }
 ;
 

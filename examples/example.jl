@@ -1,6 +1,4 @@
-function add(x::Int, y::Int)::Int
-    return x+y
+arr::Array{Int} = [2,3,4,5,6]
+for i = 1:5
+    println(arr[i])
 end
-
-y::Int = add(1, 5)
-println(y)

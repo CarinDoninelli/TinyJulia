@@ -71,6 +71,7 @@ LETTER [a-zA-Z]
 "true"                          { yylval.bool_t = true; return BOOL_LITERAL; }
 "false"                         { yylval.bool_t = false; return BOOL_LITERAL; }
 "println"                       { return KW_PRINTLN; }
+"print"                         { return KW_PRINT; }
 "return"                        { return KW_RETURN; }
 "Int"                           { return KW_INT; }
 "Bool"                          { return KW_BOOL; }

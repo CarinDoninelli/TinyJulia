@@ -25,6 +25,7 @@ ReturningContext Array::evaluate(Scope *scope) {
     return scope->withSnapshot([this, scope]() {
         stringstream code;
 
+        auto place = scope->createNewVariable(newLabel(), ReturnType::INT_ARRAY);
         vector<ReturningContext> contexts;
         for (auto expression : values) {
             auto context = expression->evaluate(scope);
@@ -34,7 +35,6 @@ ReturningContext Array::evaluate(Scope *scope) {
             code << context.code;
         }
 
-        auto place = scope->createNewVariable(newLabel(), ReturnType::INT_ARRAY);
         code << "lea edx, [ebp-" << (place->offset + defaultSize(ReturnType::INT_ARRAY)) << "]" << endl
              << "mov eax, 0" << endl
              << "mov ecx, 50" << endl
@@ -655,10 +655,9 @@ ReturningContext Print::evaluate(Scope *scope) {
         } 
 
         if (addNewLine) {
-            code << "mov edi, 10" << endl
-                 << "sub esp, 4" << endl
-                 << "push edi" << endl
-                 << "call putchar" << endl
+            code << "sub esp, 4" << endl
+                 << "push new_line" << endl
+                 << "call printf" << endl
                  << "add esp, 4" << endl;
         }
 
@@ -739,7 +738,7 @@ ReturningContext For::evaluate(Scope *scope) {
              << forLabel << ":" << "\t\t; For { end: " << endForLabel << " }" << endl
              << "mov eax, " << loopingVariablePlace << endl
              << "cmp eax, " << upperBoundContext.place << endl
-             << "setl cl" << endl
+             << "setle cl" << endl
              << "and cl, 1" << endl
              << "jz " << endForLabel << endl
              << body->evaluate(scope).code
