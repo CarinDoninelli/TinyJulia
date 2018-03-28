@@ -1,4 +1,6 @@
-
-for x = 1:10
-    println(x)
+function add(x::Int, y::Int)::Int
+    return x+y
 end
+
+result::Int = add(1, 5)
+println(result)

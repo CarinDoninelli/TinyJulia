@@ -35,6 +35,7 @@
     Expression *expression_t;
     vector<Expression *> *expression_list_t;
     ReturnType type_t;
+    vector<FunctionDeclaration::Param> *params_t;
 }
 
 %token<num_t> TK_NUM
@@ -50,11 +51,12 @@
 %token TK_AND TK_OR
 %token TK_RSHIFT TK_LSHIFT
 
-%type<type_t> type
+%type<type_t> type optType
+%type<params_t> function_params
 %type<expression_list_t> statement_list print_argument_list expression_list
 %type<expression_t> unending_block
 %type<expression_t> statement print_statement declaration_statement
-%type<expression_t> print_argument while if else for
+%type<expression_t> print_argument while if else for function return
 %type<expression_t> expression
 %type<expression_t> assignment postfix 
 %type<expression_t> condition_or condition_and
@@ -90,6 +92,18 @@ statement: print_statement  { $$ = $1; }
     | while                 { $$ = $1; }
     | if                    { $$ = $1; }
     | for                   { $$ = $1; }
+    | function              { $$ = $1; }
+    | return                { $$ = $1; }
+;
+
+return: KW_RETURN expression { $$ = new Return($2); }
+;
+
+function: KW_FUNCTION TK_ID TK_LPAREN function_params TK_RPAREN optType unending_block KW_END { $$ = new FunctionDeclaration(*$2, *$4, $6, $7); }
+;
+
+function_params: function_params ',' TK_ID type { $$ = $1; $$->push_back(FunctionDeclaration::Param{*$3, $4}); }
+        | TK_ID type { $$ = new vector<FunctionDeclaration::Param>{ FunctionDeclaration::Param(*$1, $2) }; }
 ;
 
 for: KW_FOR TK_ID '=' expression ':' expression unending_block KW_END { $$ = new For(*$2, $4, $6, $7); }
@@ -124,6 +138,10 @@ declaration_statement: TK_ID type '=' expression { $$ = new Declaration{ *$1, $2
 type: TK_DOUBLE_COLON KW_INT   { $$ = ReturnType::INTEGER; }
     | TK_DOUBLE_COLON KW_BOOL  { $$ = ReturnType::BOOL; }
     | TK_DOUBLE_COLON KW_ARRAY { $$ = ReturnType::INT_ARRAY; }
+;
+
+optType: type { $$ = $1; }
+    | %empty  { $$ = ReturnType::UNIT; }
 ;
 
 expression: assignment { $$ = $1; }

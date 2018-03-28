@@ -108,8 +108,9 @@ union YYSTYPE
     Expression *expression_t;
     vector<Expression *> *expression_list_t;
     ReturnType type_t;
+    vector<FunctionDeclaration::Param> *params_t;
 
-#line 113 "tokens.h" /* yacc.c:1915  */
+#line 114 "tokens.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;
