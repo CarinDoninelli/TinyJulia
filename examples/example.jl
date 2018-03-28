@@ -2,5 +2,5 @@ function add(x::Int, y::Int)::Int
     return x+y
 end
 
-result::Int = add(1, 5)
-println(result)
+y::Int = add(1, 5)
+println(y)

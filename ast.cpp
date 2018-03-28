@@ -616,7 +616,6 @@ ReturningContext FunctionCall::evaluate(Scope *scope) {
 }
 
 ReturningContext Return::evaluate(Scope *scope) {
-    std::cout << "retuuuurn" << endl;
     return scope->withSnapshot([this, scope]() {
         auto context = expression->evaluate(scope);
         stringstream code;
