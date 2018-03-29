@@ -806,14 +806,23 @@ ReturningContext ArrayAccess::evaluate(Scope *scope) {
         auto varPlaceOffset = varPlace->offset >= 0 ? varPlace->offset : (varPlace->offset * -1);
 
         auto indexContext = index->evaluate(scope);
-
         stringstream code;
         code << indexContext.code
-             << "mov eax, " << indexContext.place << endl
-             << "mov eax, DWORD[ebp - " << varPlaceOffset << " + eax * 4]" << endl
-             << "mov " << ebp(place) << ", eax" << endl;
+             << "mov edi, " << indexContext.place << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ 
+            "DWORD[ebp - " + to_string(varPlaceOffset) + " + edi * 4]",
+            ReturnType::INTEGER,
+            code.str()
+        };
+
+        // stringstream code;
+        // code << indexContext.code
+        //      << "mov eax, " << indexContext.place << endl
+        //      << "mov eax, DWORD[ebp - " << varPlaceOffset << " + eax * 4]" << endl
+        //      << "mov " << ebp(place) << ", eax" << endl;
+
+        // return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
     });
 }
 
