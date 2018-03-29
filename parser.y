@@ -133,11 +133,13 @@ print_argument: STRING_LITERAL { $$ = new StringExpression{ *$1 }; }
 ;
 
 declaration_statement: TK_ID type '=' expression { $$ = new Declaration{ *$1, $2, $4 }; }
+                | TK_ID type                     { $$ = new Declaration{ *$1, $2, nullptr }; }
 ;
 
-type: TK_DOUBLE_COLON KW_INT   { $$ = ReturnType::INTEGER; }
-    | TK_DOUBLE_COLON KW_BOOL  { $$ = ReturnType::BOOL; }
-    | TK_DOUBLE_COLON KW_ARRAY { $$ = ReturnType::INT_ARRAY; }
+type: TK_DOUBLE_COLON KW_INT                                  { $$ = ReturnType::INTEGER; }
+    | TK_DOUBLE_COLON KW_BOOL                                 { $$ = ReturnType::BOOL; }
+    | TK_DOUBLE_COLON KW_ARRAY TK_LPAREN expression TK_RPAREN { $$ = ReturnType::INT_ARRAY; }
+    | TK_DOUBLE_COLON KW_ARRAY                                { $$ = ReturnType::INT_ARRAY; }
 ;
 
 optType: type { $$ = $1; }
