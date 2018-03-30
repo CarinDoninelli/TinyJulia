@@ -740,6 +740,7 @@ ReturningContext For::evaluate(Scope *scope) {
         code << lowerBoundContext.code
              << upperBoundContext.code
              << "mov eax, " << lowerBoundContext.place << endl
+             << "sub esp, 4" << endl
              << "mov " << loopingVariablePlace << ", eax" << endl
              << forLabel << ":" << "\t\t; For { end: " << endForLabel << " }" << endl
              << "mov eax, " << loopingVariablePlace << endl
@@ -750,7 +751,8 @@ ReturningContext For::evaluate(Scope *scope) {
              << body->evaluate(scope).code
              << "inc " << loopingVariablePlace << endl
              << "jmp " << forLabel << endl
-             << endForLabel << ":" << "\t\t; end of " << forLabel << endl;
+             << endForLabel << ":" << "\t\t; end of " << forLabel << endl
+             << "add esp, 4";
 
         return ReturningContext{ code.str() };
     });
