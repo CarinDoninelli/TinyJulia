@@ -76,15 +76,15 @@ LETTER [a-zA-Z]
 "Int"                           { return KW_INT; }
 "Bool"                          { return KW_BOOL; }
 "Array{Int}"                    { return KW_ARRAY; }
-"Array{Bool}"                    { return KW_ARRAY; }
-"\""[^"]*"\""                   {
+"Array{Bool}"                   { return KW_ARRAY; }
+\"[^"\\]*(\\.[^"\\]*)*\"         {
                                     yytext[yyleng-1] = '\0';
                                     auto unescaped = strdup(&yytext[1]);
                                     auto escaped = escapedString(unescaped);
                                     yylval.id_t = new string(escaped);
                                     return STRING_LITERAL;
                                 }
-"'"[^']"'"                      {
+'[^'\\]*(\\.[^'\\]*)*'          {
                                     yytext[yyleng-1] = '\0';
                                     auto unescaped = strdup(&yytext[1]);
                                     auto escaped = escapedString(unescaped);

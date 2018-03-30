@@ -6,6 +6,7 @@
 
 #include <regex>
 #include <sstream>
+#include <iostream>
 
 static int counter = 0;
 
@@ -37,5 +38,25 @@ std::string joinExpressions(const vector<Expression *> &vector) {
         output << item << " ";
     }
     return output.str();
+}
+
+std::string toASMLiteral(const string &str) {
+    cout << str << endl;
+    stringstream literal;
+    literal << '"';
+    for (const auto &c : str) {
+        if (c == '\n') {
+            literal << '"' << ", 10, " << '"'; 
+        }
+        else if (c == '"') {
+            literal << '"' << ", 8, " << '"';
+        }
+        else {
+            literal << c;
+        }
+    }
+    literal << '"' << ", 0";
+
+    return literal.str();
 }
 

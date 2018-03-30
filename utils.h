@@ -15,7 +15,7 @@ string escapedString(const string &str);
 
 char *charPtr(const string &str);
 
-char toASMLiteral(const string &str);
+string toASMLiteral(const string &str);
 
 std::string joinExpressions(const vector<Expression *> &vector);
 

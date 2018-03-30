@@ -18,6 +18,8 @@
 
 using namespace std;
 
+string toASMLiteral(const std::string &);
+
 class Expression {
 public:
     virtual ReturningContext evaluate(Scope *scope) = 0;
@@ -39,7 +41,7 @@ struct IntExpression : public Expression {
 struct StringExpression : public Expression {
     string value;
 
-    explicit StringExpression(string value) : value(move(value)) {}
+    explicit StringExpression(string value) : value(toASMLiteral(move(value))) {}
 
     ReturningContext evaluate(Scope *scope) override;
 
