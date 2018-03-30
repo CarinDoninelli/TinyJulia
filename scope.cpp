@@ -23,6 +23,9 @@ int Scope::size() {
     for (const auto &var : variables) {
         size += var.second->size;
     }
+    if (inheritSize) {
+        size += outer->size();
+    }
     return size;
 }
 
@@ -37,9 +40,9 @@ Var *Scope::find(const string &variable) {
 
     auto found = outer->find(variable);
     return new Var{
-            isFunctionScope 
-                    ? (-1) * (4 + (paramCount * 4) + outer->size() - found->offset) 
-                    : size() - 4 + found->offset,
+            inheritSize
+                    ? found->offset
+                    : (-1) * (4 + (paramCount * 4) + outer->size() - found->offset),
             found->type
     };
 }

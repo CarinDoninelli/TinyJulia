@@ -26,6 +26,7 @@ class Scope {
     int paramCount;
     map<string, Var *> variables;
     bool isFunctionScope{ false };
+    bool inheritSize{ false };
 
 public:
     Scope(Scope *outer, int paramCount) : outer(outer), paramCount(paramCount) {}
@@ -47,6 +48,8 @@ public:
     Var *createNewVariable(const string &name, ReturnType type);
 
     void setIsFunctionScope(bool isFunctionScope) { this->isFunctionScope = isFunctionScope; }
+
+    void setInheritSize(bool inheritSize) { this->inheritSize = inheritSize; }
 };
 
 #endif //TINYJULIAPP_SCOPE_H

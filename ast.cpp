@@ -35,7 +35,8 @@ ReturningContext Array::evaluate(Scope *scope) {
             code << context.code;
         }
 
-        code << "lea edx, [ebp-" << (place->offset + defaultSize(ReturnType::INT_ARRAY)) << "]" << endl
+        code << "sub esp, 200" << endl
+             << "lea edx, [ebp-" << (place->offset + defaultSize(ReturnType::INT_ARRAY)) << "]" << endl
              << "mov eax, 0" << endl
              << "mov ecx, 50" << endl
              << "mov edi, edx" << endl
@@ -696,7 +697,8 @@ ReturningContext If::evaluate(Scope *scope) {
 }
 
 ReturningContext While::evaluate(Scope *scope) {
-    // scope = new Scope(scope);
+    scope = new Scope(scope);
+    scope->setInheritSize(true);
     return scope->withSnapshot([this, scope]() {
         auto conditionContext = condition->evaluate(scope);
         checkType(conditionContext.type, ReturnType::BOOL);
@@ -719,7 +721,8 @@ ReturningContext While::evaluate(Scope *scope) {
 }
 
 ReturningContext For::evaluate(Scope *scope) {
-    // scope = new Scope(scope);
+    scope = new Scope(scope);
+    scope->setInheritSize(true);
     return scope->withSnapshot([this, scope]() {
         auto lowerBoundContext = lowerBound->evaluate(scope);
         auto upperBoundContext = upperBound->evaluate(scope);

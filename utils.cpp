@@ -40,8 +40,7 @@ std::string joinExpressions(const vector<Expression *> &vector) {
     return output.str();
 }
 
-std::string toASMLiteral(const string &str) {
-    cout << str << endl;
+std::string toASMLiteral(const string &str) {    
     stringstream literal;
     literal << '"';
     for (const auto &c : str) {

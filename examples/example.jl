@@ -1,6 +1,7 @@
 
-c::Int = 21
+c::Array{Int} = [1,2,3,4,5]
 
 for i = 1:5
-    print(i, "8", c)
+    println(i, "=", c[i]*2)
 end
+
