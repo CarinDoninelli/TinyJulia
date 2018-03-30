@@ -42,6 +42,8 @@ class FunctionCode {
 public:
     static void add(FunctionMeta meta);
 
+    static void replaceCode(const std::string &functionName, std::string code);
+
     static string joined();
 
     static FunctionMeta find(const string &name, const vector<ReturnType> &argumentTypes);

@@ -23,6 +23,15 @@ void FunctionCode::add(FunctionMeta meta) {
     codeBlocks.push_back(move(meta));
 }
 
+void FunctionCode::replaceCode(const std::string &functionName, std::string code) {
+    for (auto &block : codeBlocks) {
+        if (block.name == functionName) {
+            block.code = std::move(code);
+            return;
+        }
+    }
+}
+
 string FunctionCode::joined() {
     stringstream ss;
     for (const auto &block : codeBlocks) {

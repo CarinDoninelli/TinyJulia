@@ -549,6 +549,7 @@ ReturningContext Assignment::evaluate(Scope *scope) {
 
 ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
     auto functionScope = new Scope(scope, static_cast<int>(params.size()));
+    functionScope->setIsFunctionScope(true);
     return functionScope->withSnapshot([this, functionScope]() {
         auto label = newLabel();
 
@@ -563,6 +564,8 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
                  << "mov " << ebp(newVariable->offset) << ", eax" << endl;
         }
 
+        FunctionCode::add(FunctionMeta{ name, label, this->paramTypeList(), "", type });
+
         code << body->evaluate(functionScope).code;
         if (type != ReturnType::UNIT) {
             code << "ud2" << "\t\t; End of function reached without return." << endl;
@@ -571,7 +574,7 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
              << "leave" << endl
              << "ret" << endl;
 
-        FunctionCode::add(FunctionMeta{ name, label, this->paramTypeList(), code.str(), type });
+        FunctionCode::replaceCode(name, code.str());
         return ReturningContext { "" };
     });
 }

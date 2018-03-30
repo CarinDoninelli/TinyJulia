@@ -25,6 +25,7 @@ class Scope {
     int tempMemory{ 4 };
     int paramCount;
     map<string, Var *> variables;
+    bool isFunctionScope{ false };
 
 public:
     Scope(Scope *outer, int paramCount) : outer(outer), paramCount(paramCount) {}
@@ -44,6 +45,8 @@ public:
     Var *find(const string &variable);
 
     Var *createNewVariable(const string &name, ReturnType type);
+
+    void setIsFunctionScope(bool isFunctionScope) { this->isFunctionScope = isFunctionScope; }
 };
 
 #endif //TINYJULIAPP_SCOPE_H
