@@ -69,8 +69,8 @@ ReturningContext AddExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
+             << rightContext.code
              << "add eax, " << rightContext.place << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
@@ -89,8 +89,8 @@ ReturningContext SubExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
+             << rightContext.code
              << "sub eax, " << rightContext.place << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
@@ -109,9 +109,9 @@ ReturningContext MulExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
              << "cdq" << endl
+             << rightContext.code
              << "mov ecx, " << rightContext.place << endl
              << "imul ecx" << endl
              << "mov " << ebp(place) << ", eax" << endl
@@ -132,9 +132,9 @@ ReturningContext DivExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
              << "cdq" << endl
+             << rightContext.code
              << "mov ecx, " << rightContext.place << endl
              << "idiv ecx" << endl
              << "mov " << ebp(place) << ", eax" << endl
@@ -158,10 +158,10 @@ ReturningContext AndExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
              << "cmp eax, 0" << endl
              << "je " << falseLabel << endl
+             << rightContext.code
              << "mov eax, " << rightContext.place << endl
              << "cmp eax, 0" << endl
              << "je " << falseLabel << endl
@@ -192,10 +192,10 @@ ReturningContext OrExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
              << "cmp eax, 0" << endl
              << "jne " << trueLabel << endl
+             << rightContext.code
              << "mov eax, " << rightContext.place << endl
              << "cmp eax, 0" << endl
              << "je " << falseLabel << endl
@@ -223,8 +223,8 @@ ReturningContext XorExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
+             << rightContext.code
              << "xor eax, " << rightContext.place << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
@@ -243,8 +243,8 @@ ReturningContext LessThanExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
+             << rightContext.code
              << "cmp eax, " << rightContext.place << endl
              << "setl cl" << endl
              << "and cl, 1" << endl
@@ -266,8 +266,8 @@ ReturningContext GreaterThanExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
+             << rightContext.code
              << "cmp eax, " << rightContext.place << endl
              << "setg cl" << endl
              << "and cl, 1" << endl
@@ -289,8 +289,8 @@ ReturningContext LessThanOrEqualExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
+             << rightContext.code
              << "cmp eax, " << rightContext.place << endl
              << "setle cl" << endl
              << "and cl, 1" << endl
@@ -312,8 +312,8 @@ ReturningContext GreaterThanOrEqualExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
+             << rightContext.code
              << "cmp eax, " << rightContext.place << endl
              << "setge cl" << endl
              << "and cl, 1" << endl
@@ -335,8 +335,8 @@ ReturningContext EqualExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
+             << rightContext.code
              << "cmp eax, " << rightContext.place << endl
              << "sete cl" << endl
              << "and cl, 1" << endl
@@ -358,8 +358,8 @@ ReturningContext NotEqualExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
+             << rightContext.code
              << "cmp eax, " << rightContext.place << endl
              << "setne cl" << endl
              << "and cl, 1" << endl
@@ -540,8 +540,8 @@ ReturningContext Assignment::evaluate(Scope *scope) {
 
         stringstream code;
         code << context.code
-             << locationContext.code
              << "mov eax, " << context.place << endl
+             << locationContext.code
              << "mov " << locationContext.place << ", eax" << endl;
 
         return ReturningContext { locationContext.place, locationContext.type, code.str() };
