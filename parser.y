@@ -61,6 +61,7 @@
 %type<expression_t> assignment postfix 
 %type<expression_t> condition_or condition_and
 %type<expression_t> bitwise_or bitwise_xor bitwise_and
+%type<expression_t> left_shift right_shift
 %type<expression_t> relational arithmetic term exponent unary factor
 
 %expect 0
@@ -104,6 +105,7 @@ function: KW_FUNCTION TK_ID TK_LPAREN function_params TK_RPAREN optType unending
 
 function_params: function_params ',' TK_ID type { $$ = $1; $$->push_back(FunctionDeclaration::Param{*$3, $4}); }
         | TK_ID type { $$ = new vector<FunctionDeclaration::Param>{ FunctionDeclaration::Param(*$1, $2) }; }
+        | %empty { $$ = new vector<FunctionDeclaration::Param>(); }
 ;
 
 for: KW_FOR TK_ID '=' expression ':' expression unending_block KW_END { $$ = new For(*$2, $4, $6, $7); }
@@ -175,8 +177,16 @@ bitwise_xor: bitwise_xor '$' bitwise_and { $$ = new XorExpression{ $1, $3 }; }
     | bitwise_and                        { $$ = $1; }
 ;
 
-bitwise_and: bitwise_and '&' relational { $$ = new BitwiseAndExpression{ $1, $3 }; }
-    | relational                        { $$ = $1; }
+bitwise_and: bitwise_and '&' left_shift { $$ = new BitwiseAndExpression{ $1, $3 }; }
+    | left_shift                        { $$ = $1; }
+;
+
+left_shift: left_shift TK_LSHIFT right_shift { $$ = new LeftShiftExpression($1, $3); }
+    | right_shift                            { $$ = $1; }
+;
+
+right_shift: right_shift TK_RSHIFT relational { $$ = new RightShiftExpression($1, $3); }
+    | relational                              { $$ = $1; }
 ;
 
 relational: relational OP_EQ arithmetic { $$ = new EqualExpression{ $1, $3 };              }
@@ -205,6 +215,7 @@ exponent: exponent '^' unary { $$ = new PowExpression($1, $3); }
 
 unary: '-' unary { $$ = new UnaryMinus($2); }
     |  '!' unary { $$ = new Negation($2); }
+    |  '~' unary { $$ = new BitwiseNegation($2); }
     |  postfix   { $$ = $1; }
 ;
 

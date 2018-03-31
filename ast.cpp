@@ -405,7 +405,7 @@ ReturningContext RightShiftExpression::evaluate(Scope *scope) {
              << rightContext.code
              << "mov eax, " << leftContext.place << endl
              << "mov ecx, " << rightContext.place << endl
-             << "shr eax, cl" << endl
+             << "sar eax, cl" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
         return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
@@ -562,6 +562,7 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
         for (int i = 0; i < params.size(); i++) {
             auto newVariable = functionScope->createNewVariable(params[i].name, params[i].type);
             code << "mov eax, DWORD [ebp + " << to_string(8 + (4 * i)) << "]" << endl
+                 << "sub esp, " << defaultSize(newVariable->type) << endl
                  << "mov " << ebp(newVariable->offset) << ", eax" << endl;
         }
 
@@ -854,6 +855,21 @@ ReturningContext ArraySet::evaluate(Scope *scope) {
              << "mov ecx, " << expressionContext.place << endl
              << "mov DWORD[ebp - " << varPlaceOffset << " + eax * 4], ecx" << endl
              << "mov " << ebp(place) << ", eax" << endl;
+
+        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+    });
+}
+
+ReturningContext BitwiseNegation::evaluate(Scope *scope) {
+    auto place = scope->newTempSpace();
+    return scope->withSnapshot([this, scope, place]() {
+        auto context = expression->evaluate(scope);
+        
+        stringstream code;
+        code << context.code
+             << "mov ecx, " << context.place << endl
+             << "xor ecx, -1" << endl
+             << "mov " << ebp(place) << ", ecx" << endl;
 
         return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
     });

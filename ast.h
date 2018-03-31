@@ -276,4 +276,12 @@ struct ArraySet : public Expression {
     ReturningContext evaluate(Scope *scope) override;
 };
 
+struct BitwiseNegation : public Expression {
+    Expression *expression;
+
+    explicit BitwiseNegation(Expression *expression) : expression(expression) {}
+
+    ReturningContext evaluate(Scope *scope) override;
+};
+
 #endif //TINYJULIAPP_AST_H
