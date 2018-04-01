@@ -6,6 +6,7 @@
 #include "errors.h"
 #include "utils.h"
 #include <sstream>
+#include <iostream>
 
 vector<FunctionMeta> FunctionCode::codeBlocks;
 vector<string> FunctionCode::externFunctions{
@@ -42,7 +43,7 @@ string FunctionCode::joined() {
 
 FunctionMeta FunctionCode::find(const string &name, const vector<ReturnType> &argumentTypes) {
     for (const auto &block : codeBlocks) {
-        if (block.name == name && block.paramTypes == argumentTypes) {
+        if (block.name == name) {
             return block;
         }
     }

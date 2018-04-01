@@ -41,21 +41,21 @@ std::string joinExpressions(const vector<Expression *> &vector) {
 }
 
 std::string toASMLiteral(const string &str) {    
-    stringstream literal;
-    literal << '"';
-    for (const auto &c : str) {
-        if (c == '\n') {
-            literal << '"' << ", 10, " << '"'; 
-        }
-        else if (c == '"') {
-            literal << '"' << ", 8, " << '"';
-        }
-        else {
-            literal << c;
-        }
-    }
-    literal << '"' << ", 0";
+    // stringstream literal;
+    // literal << '"';
+    // for (const auto &c : str) {
+    //     if (c == '\n') {
+    //         literal << '"' << ", 10, " << '"'; 
+    //     }
+    //     else if (c == '"') {
+    //         literal << '"' << ", 8, " << '"';
+    //     }
+    //     else {
+    //         literal << c;
+    //     }
+    // }
+    // literal << '"' << ", 0";
 
-    return literal.str();
+    return "`" + str + "`, 0";
 }
 
