@@ -423,10 +423,11 @@ ReturningContext ModExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << rightContext.code
              << "mov eax, " << leftContext.place << endl
              << "cdq" << endl
-             << "idiv " << rightContext.place << endl
+             << rightContext.code
+             << "mov ecx, "<< rightContext.place << endl
+             << "idiv ecx" << endl
              << "mov eax, edx" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 

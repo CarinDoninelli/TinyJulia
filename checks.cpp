@@ -45,3 +45,7 @@ void checkRange(int lower, int upper) {
         throw InvalidRangeError();
     }
 }
+
+bool isValidSubtype(ReturnType type, ReturnType expected) {
+    
+}

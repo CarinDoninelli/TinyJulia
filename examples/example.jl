@@ -1,20 +1,25 @@
-x::Int = 10
-
-function func(x::Int, y::Bool, z::Int)
-    println("The value of the parameter x is ", x)
-    println("The value of the parameter y is ", y)
-    println("The value of the parameter z is ", z)
+el_global::Int = 100
+el_bool::Bool = false
+function IsPair(val::Int)::Bool
+    return val % 2 == 0
 end
 
+function WeirdStuff(val::Int)::Int
+    valor::Int = val * 2;
 
-func(x+1000, false, true)
-println("The value of x is ", x)
+    for i = 0:valor
+        if i == 5
+            println("The favorite number, ", i, ", has been reached: ", valor);
+        end
+        println("Is pair ", i, " the val: ", IsPair(i))
+    end
 
-#=Prints
+    return valor * el_global
+end
 
-The value of the parameter x is 1010
-The value of the parameter y is false
-The value of the parameter z is 1
-The value of x is 10
+println("#", el_global, " is pair: ", IsPair(el_global))
+println("Weird stuff from val: ", el_global, " now: ", WeirdStuff(el_global))
 
-=#
+if el_bool == false
+    println("All a lie.")
+end

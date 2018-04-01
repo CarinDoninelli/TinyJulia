@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 
+
 vector<FunctionMeta> FunctionCode::codeBlocks;
 vector<string> FunctionCode::externFunctions{
         "printf",
@@ -43,7 +44,12 @@ string FunctionCode::joined() {
 
 FunctionMeta FunctionCode::find(const string &name, const vector<ReturnType> &argumentTypes) {
     for (const auto &block : codeBlocks) {
-        if (block.name == name) {
+        if (block.name == name && argumentTypes.size() == block.paramTypes.size()) {
+            // for (int i = 0; i < argumentTypes.size(); i++) {
+            //     if (!typeIsSubset(argumentTypes[i], block.paramTypes[i])) {
+            //         break;
+            //     }
+            // }
             return block;
         }
     }

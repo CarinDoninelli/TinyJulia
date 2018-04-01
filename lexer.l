@@ -35,6 +35,7 @@ LETTER [a-zA-Z]
 "~"                             { return '~'; }
 "<<"                            { return TK_LSHIFT; }
 ">>"                            { return TK_RSHIFT; }
+">>>"                           { return TK_RSHIFT; }
 "+="                            { return OP_PLUS_ASSIGN; }
 "-="                            { return OP_SUB_ASSIGN; }
 "*="                            { return OP_MUL_ASSIGN; }

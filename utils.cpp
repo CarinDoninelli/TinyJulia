@@ -20,8 +20,8 @@ string newLabel() {
 }
 
 string escapedString(const string &str) {
-    string escaped = regex_replace(str, regex("\\\\n"), "\n");
-    return escaped;
+    // string escaped = regex_replace(str, regex("\\\\n"), "\n");
+    return str;
 }
 
 char *charPtr(const string &str) {
