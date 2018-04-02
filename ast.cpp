@@ -867,6 +867,9 @@ ReturningContext BitwiseNegation::evaluate(Scope *scope) {
     auto place = scope->newTempSpace();
     return scope->withSnapshot([this, scope, place]() {
         auto context = expression->evaluate(scope);
+        if (context.type == ReturnType::BOOL) {
+            return Negation(expression).evaluate(scope);
+        }
         
         stringstream code;
         code << context.code
