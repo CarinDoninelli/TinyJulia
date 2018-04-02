@@ -15,6 +15,8 @@
         "type_traits": "cpp",
         "regex": "cpp",
         "system_error": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "__tree": "cpp",
+        "map": "cpp"
     }
 }

@@ -571,7 +571,10 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
 
         code << body->evaluate(functionScope).code;
         if (type != ReturnType::UNIT) {
+            auto error = new Print(vector<Expression *> { new StringExpression("non-void function end reached without return.") }, true);
+            code << error->evaluate(functionScope).code;
             code << "ud2" << "\t\t; End of function reached without return." << endl;
+            delete error;
         }
         code << "mov eax, 0" << endl
              << "leave" << endl
@@ -617,7 +620,8 @@ ReturningContext FunctionCall::evaluate(Scope *scope) {
 
         code << "call " << function.label << "\t\t; call " << functionName << endl
              << "add esp, " << to_string(arguments.size() * 8) << endl
-             << "mov " << ebp(place) << ", eax" << endl;
+             << "mov " << ebp(place) << ", eax" << endl
+             << Print(vector<Expression *> { new StringExpression("") }, true).evaluate(scope).code;
 
         return ReturningContext { ebp(place), function.returnType, code.str() };
     });
@@ -815,7 +819,7 @@ ReturningContext ArrayAccess::evaluate(Scope *scope) {
         auto varPlace = scope->find(varName);
         checkType(varPlace->type, vector<ReturnType>{ ReturnType::INT_ARRAY, ReturnType::STRING });
 
-        auto varPlaceOffset = varPlace->offset >= 0 ? varPlace->offset : (varPlace->offset * -1);
+        auto varPlaceOffset = varPlace->offset;
 
         auto indexContext = index->evaluate(scope);
         stringstream code;
