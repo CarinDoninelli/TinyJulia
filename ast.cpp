@@ -657,11 +657,9 @@ ReturningContext Print::evaluate(Scope *scope) {
         }
 
         stringstream code;
-        for (const auto &context : contexts) {
-            code << context.code;
-        }
 
         for (const auto &context : contexts) {
+            code << context.code;
             if (context.type == ReturnType::STRING) {
                 code << "sub esp, 4" << endl
                      << "push " << context.place << endl

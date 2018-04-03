@@ -1,7 +1,7 @@
 el_global::Int = 100
 el_bool::Bool = false
 function IsPair(val::Int)::Bool
-    return val % 2 == 0
+    return (val % 2 == 0)
 end
 
 function WeirdStuff(val::Int)::Int
