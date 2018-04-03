@@ -1,33 +1,53 @@
 #=
 *******************************************
- * File: ArithOperators
- * A test program for arithmethic operators
- ******************************************
+ * File: Relational
+ * A test program for relational operators
+ *******************************************
 =#
+
 x::Int = 10
-y::Int = 3
+y::Int = 20
 
-println(x)
-println(y)
-println(-x)
-println(-y);println (x + y)
-println(x - y)
-println(x * y)
-println(x / y)
-println(x % y)
-println(x ^ y)
+trueValue::Bool = true
+falseValue::Bool = false
+
+ println("trueValue = ",trueValue)
+ println("falseValue = ",falseValue)
 
 
+ println("x = ",x)
+ println("y = ",y)
+
+ println("x > y = ",x > y)
+
+ println("x >= y = ",x >= y)
+
+ println("x < y = ",x < y)
+
+ println("x <= y = ",x <= y)
+
+ println("x == y = ",x == y)
+
+ println("x != y = ",x != y)
+
+ println("trueValue == falseValue = ",trueValue == falseValue)
+
+ println ("trueValue != falseValue =",trueValue != falseValue)
+
+#%#=
 #=
-    ### Should Print ###
-            10
-            3
-            -10
-            -3
-            13
-            7
-            30
-            3
-            1
-            1000
+Should print
+    trueValue = true
+    falseValue = false
+    x = 10
+    y = 20
+    x > y = false
+    x >= y = false
+    x < y = true
+    x <= y = true
+    x == y = false
+    x != y = true
+    trueValue == falseValue = false
+    trueValue != falseValue =true
 =#
+#%#=

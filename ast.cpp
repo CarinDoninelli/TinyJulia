@@ -668,7 +668,23 @@ ReturningContext Print::evaluate(Scope *scope) {
                      << "push " << context.place << endl
                      << "call printf" << endl
                      << "add esp, 4" << endl;
-            } else {
+            }
+            else if (context.type == ReturnType::BOOL) {
+                auto falseLabel = newLabel();
+                auto endLabel = newLabel();
+                code << "cmp " << context.place << ", 1" << endl
+                     << "jne " << falseLabel << endl
+                     << "sub esp, 4" << endl
+                     << "push true" << endl
+                     << "jmp " << endLabel << endl
+                     << falseLabel << ":" << endl
+                     << "sub esp, 4" << endl
+                     << "push false" << endl
+                     << endLabel << ":" << endl
+                     << "call printf" << endl
+                     << "add esp, 4" << endl;
+            } 
+            else {
                 code << "sub esp, 8" << endl
                      << "push " << context.place << endl
                      << "push print_fmt_int" << endl
