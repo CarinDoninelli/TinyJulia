@@ -68,8 +68,8 @@ string FunctionCode::externFunctionCode() {
 map<string, string> *LiteralCode::literals = new map<string, string> { // NOLINT
         pair<string, string> { "\"%d\", 0", "print_fmt_int" },
         pair<string, string> { "\"\", 10, 0", "new_line" },
-        pair<string, string> { "true, 0", "true" },
-        pair<string, string> { "false, 0", "false" }
+        pair<string, string> { "\"true\", 0", "true" },
+        pair<string, string> { "\"false\", 0", "false" }
 };
 
 
