@@ -1,9 +1,33 @@
-test1::Int = 1
-while(test1 <= 10)   
-    println(test1)
-    if test1 == 7
-        println("Aqui paro en 7")
-        break
-    end
-    test1 = test1 + 1
-end
+#=
+*******************************************
+ * File: ArithOperators
+ * A test program for arithmethic operators
+ ******************************************
+=#
+x::Int = 10
+y::Int = 3
+
+println(x)
+println(y)
+println(-x)
+println(-y);println (x + y)
+println(x - y)
+println(x * y)
+println(x / y)
+println(x % y)
+println(x ^ y)
+
+
+#=
+    ### Should Print ###
+            10
+            3
+            -10
+            -3
+            13
+            7
+            30
+            3
+            1
+            1000
+=#

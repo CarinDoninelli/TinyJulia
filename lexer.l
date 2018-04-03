@@ -17,9 +17,11 @@ using namespace std;
 DIGIT [0-9]
 LETTER [a-zA-Z]
 
+%x commentState
+
 %%
+"#="                            { BEGIN(commentState); }
 "#"[^\n]*                       { /* NOTHING */ }
-"#="(.|\n)+"=#"                 { /* NOTHING */ }
 [ \t]                           { /* NOTHING */ }
 \n                              { return TK_EOL; }
 "="                             { return '='; }
@@ -97,5 +99,9 @@ LETTER [a-zA-Z]
 {DIGIT}+                        { yylval.num_t = atoi(yytext); return TK_NUM; }
 {LETTER}({DIGIT}|{LETTER}|_)*   { yylval.id_t = new string(yytext); return TK_ID; }
 .                               { printf("Line %d: Invalid symbol '%c'\n", yylineno, yytext[0]); exit(-1); }
-<<EOF>>                         { return 0; }
+<INITIAL><<EOF>>                { return 0; }
+
+<commentState>"=#" {BEGIN(INITIAL);}
+<commentState>.|\n {}
+<commentState><<EOF>> {printf("Line %d : unclosed block comment\n",yylineno); return 0;}
 %%
