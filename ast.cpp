@@ -830,8 +830,7 @@ ReturningContext BitNegation::evaluate(Scope *scope) {
 }
 
 ReturningContext ArrayAccess::evaluate(Scope *scope) {
-    auto place = scope->newTempSpace();
-    return scope->withSnapshot([this, scope, place]() {
+    return scope->withSnapshot([this, scope]() {
         auto varPlace = scope->find(varName);
         checkType(varPlace->type, vector<ReturnType>{ReturnType::INT_ARRAY, ReturnType::STRING});
 
