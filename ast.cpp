@@ -12,6 +12,8 @@
 static string lastLoopStart;
 static string lastLoopEnd;
 
+static int arrs = 0;
+
 ReturningContext IntExpression::evaluate(Scope *scope) {
     return ReturningContext{to_string(value), ReturnType::INTEGER};
 }
@@ -39,6 +41,9 @@ ReturningContext Array::evaluate(Scope *scope) {
             code << context.code;
         }
 
+        string temp = arrs % 2 == 0 ? "edi" : "esi";
+        arrs += 1;
+
         code << "sub esp, 200" << endl
              << "lea edx, [ebp-" << (place->offset + defaultSize(ReturnType::INT_ARRAY)) << "]" << endl
              << "mov eax, 0" << endl
@@ -49,7 +54,8 @@ ReturningContext Array::evaluate(Scope *scope) {
         for (int i = 0; i < contexts.size(); i++) {
             auto context = contexts[i];
             auto contextPlace = place->offset + defaultSize(ReturnType::INT_ARRAY) - (4 * i);
-            code << "mov eax, " << context.place << endl
+            code << context.code
+                 << "mov eax, " << context.place << endl
                  << "mov " << ebp(contextPlace) << ", eax" << endl;
         }
 
@@ -449,12 +455,11 @@ ReturningContext PowExpression::evaluate(Scope *scope) {
         checkType(rightContext.type, ReturnType::INTEGER);
 
         stringstream code;
-        code << leftContext.code
-             << rightContext.code
+        code << rightContext.code
              << "push " << rightContext.place << endl
+             << leftContext.code
              << "push " << leftContext.place << endl
              << "call pow_helper_function" << endl
-             << "add esp, 8" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
         return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
@@ -832,24 +837,19 @@ ReturningContext ArrayAccess::evaluate(Scope *scope) {
 
         auto varPlaceOffset = varPlace->offset;
 
+        string temp = arrs % 2 == 0 ? "edi" : "esi";
+        arrs += 1;
+
         auto indexContext = index->evaluate(scope);
         stringstream code;
         code << indexContext.code
-             << "mov edi, " << indexContext.place << endl;
+             << "mov " << temp << ", " << indexContext.place << endl;
 
         return ReturningContext{
-                "DWORD[ebp - " + to_string(varPlaceOffset) + " + edi * 4]",
+                "DWORD[ebp - " + to_string(varPlaceOffset) + " + " + temp + " * 4]",
                 ReturnType::INTEGER,
                 code.str()
         };
-
-        // stringstream code;
-        // code << indexContext.code
-        //      << "mov eax, " << indexContext.place << endl
-        //      << "mov eax, DWORD[ebp - " << varPlaceOffset << " + eax * 4]" << endl
-        //      << "mov " << ebp(place) << ", eax" << endl;
-
-        // return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
     });
 }
 
