@@ -79,7 +79,8 @@ ReturningContext AddExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << "mov " << ebp(place) << ", " << leftContext.place << endl
+             << "mov eax, " << leftContext.place << endl 
+             << "mov " << ebp(place) << ", eax" << endl
              << rightContext.code
              << "mov eax, " << rightContext.place << endl
              << "add " << ebp(place) << ", eax" << endl;
