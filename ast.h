@@ -51,7 +51,7 @@ struct StringExpression : public Expression {
 struct Array : public Expression {
     vector<Expression *> values;
 
-    explicit Array( vector<Expression *> values) : values(move(values)) {}
+    explicit Array(vector<Expression *> values) : values(move(values)) {}
 
     ReturningContext evaluate(Scope *scope) override;
 
@@ -176,7 +176,7 @@ struct FunctionCall : public Expression {
 
     FunctionCall(string functionName, vector<Expression *> arguments) :
             functionName(move(functionName)), arguments(move(arguments)) {
-        
+
         reverse(this->arguments.begin(), this->arguments.end());
     }
 
@@ -228,7 +228,7 @@ struct For : public Expression {
 
     For(string varName, Expression *lowerBound, Expression *upperBound, Expression *body) :
             varName(move(varName)), lowerBound(lowerBound), upperBound(upperBound), body(body) {}
-    
+
     ReturningContext evaluate(Scope *scope) override;
 };
 
@@ -270,7 +270,7 @@ struct ArraySet : public Expression {
     Expression *index;
     Expression *expression;
 
-    ArraySet(string varName, Expression *index, Expression *expression) : 
+    ArraySet(string varName, Expression *index, Expression *expression) :
             varName(move(varName)), index(index), expression(expression) {}
 
     ReturningContext evaluate(Scope *scope) override;
@@ -281,6 +281,14 @@ struct BitwiseNegation : public Expression {
 
     explicit BitwiseNegation(Expression *expression) : expression(expression) {}
 
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct Break : public Expression {
+    ReturningContext evaluate(Scope *scope) override;
+};
+
+struct Continue: public Expression {
     ReturningContext evaluate(Scope *scope) override;
 };
 

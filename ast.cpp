@@ -8,17 +8,21 @@
 #include "checks.h"
 #include "utils.h"
 
+
+static string lastLoopStart;
+static string lastLoopEnd;
+
 ReturningContext IntExpression::evaluate(Scope *scope) {
-    return ReturningContext { to_string(value), ReturnType::INTEGER };
+    return ReturningContext{to_string(value), ReturnType::INTEGER};
 }
 
 ReturningContext StringExpression::evaluate(Scope *scope) {
     auto label = LiteralCode::findLabel(value);
-    return ReturningContext { label, ReturnType::STRING };
+    return ReturningContext{label, ReturnType::STRING};
 }
 
 ReturningContext BoolExpression::evaluate(Scope *scope) {
-    return ReturningContext { (value ? "1" : "0"), ReturnType::BOOL };
+    return ReturningContext{(value ? "1" : "0"), ReturnType::BOOL};
 }
 
 ReturningContext Array::evaluate(Scope *scope) {
@@ -49,13 +53,13 @@ ReturningContext Array::evaluate(Scope *scope) {
                  << "mov " << ebp(contextPlace) << ", eax" << endl;
         }
 
-        return ReturningContext{ to_string(place->offset), ReturnType::INT_ARRAY, code.str() };
+        return ReturningContext{to_string(place->offset), ReturnType::INT_ARRAY, code.str()};
     });
 }
 
 ReturningContext IdExpression::evaluate(Scope *scope) {
     auto variable = scope->find(varName);
-    return ReturningContext{ ebp(variable->offset), variable->type };
+    return ReturningContext{ebp(variable->offset), variable->type};
 }
 
 ReturningContext AddExpression::evaluate(Scope *scope) {
@@ -74,7 +78,7 @@ ReturningContext AddExpression::evaluate(Scope *scope) {
              << "add eax, " << rightContext.place << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -94,7 +98,7 @@ ReturningContext SubExpression::evaluate(Scope *scope) {
              << "sub eax, " << rightContext.place << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -117,7 +121,7 @@ ReturningContext MulExpression::evaluate(Scope *scope) {
              << "mov " << ebp(place) << ", eax" << endl
              << "nop" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -140,7 +144,7 @@ ReturningContext DivExpression::evaluate(Scope *scope) {
              << "mov " << ebp(place) << ", eax" << endl
              << "nop" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -173,7 +177,7 @@ ReturningContext AndExpression::evaluate(Scope *scope) {
              << "movzx eax, al" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext { ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -208,7 +212,7 @@ ReturningContext OrExpression::evaluate(Scope *scope) {
              << "movzx eax, al" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext { ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -218,8 +222,8 @@ ReturningContext XorExpression::evaluate(Scope *scope) {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
-        checkType(leftContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
-        checkType(rightContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
+        checkType(leftContext.type, vector<ReturnType>{ReturnType::INTEGER, ReturnType::BOOL});
+        checkType(rightContext.type, vector<ReturnType>{ReturnType::INTEGER, ReturnType::BOOL});
 
         stringstream code;
         code << leftContext.code
@@ -228,7 +232,7 @@ ReturningContext XorExpression::evaluate(Scope *scope) {
              << "xor eax, " << rightContext.place << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext { ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -251,7 +255,7 @@ ReturningContext LessThanExpression::evaluate(Scope *scope) {
              << "movzx eax, cl" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -274,7 +278,7 @@ ReturningContext GreaterThanExpression::evaluate(Scope *scope) {
              << "movzx eax, cl" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -297,7 +301,7 @@ ReturningContext LessThanOrEqualExpression::evaluate(Scope *scope) {
              << "movzx eax, cl" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -320,7 +324,7 @@ ReturningContext GreaterThanOrEqualExpression::evaluate(Scope *scope) {
              << "movzx eax, cl" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -343,7 +347,7 @@ ReturningContext EqualExpression::evaluate(Scope *scope) {
              << "movzx eax, cl" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -366,7 +370,7 @@ ReturningContext NotEqualExpression::evaluate(Scope *scope) {
              << "movzx eax, cl" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -387,7 +391,7 @@ ReturningContext LeftShiftExpression::evaluate(Scope *scope) {
              << "shl eax, cl" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -408,7 +412,7 @@ ReturningContext RightShiftExpression::evaluate(Scope *scope) {
              << "sar eax, cl" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -426,12 +430,12 @@ ReturningContext ModExpression::evaluate(Scope *scope) {
              << "mov eax, " << leftContext.place << endl
              << "cdq" << endl
              << rightContext.code
-             << "mov ecx, "<< rightContext.place << endl
+             << "mov ecx, " << rightContext.place << endl
              << "idiv ecx" << endl
              << "mov eax, edx" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -453,7 +457,7 @@ ReturningContext PowExpression::evaluate(Scope *scope) {
              << "add esp, 8" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -463,8 +467,8 @@ ReturningContext BitwiseOrExpression::evaluate(Scope *scope) {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
-        checkType(leftContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
-        checkType(rightContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
+        checkType(leftContext.type, vector<ReturnType>{ReturnType::INTEGER, ReturnType::BOOL});
+        checkType(rightContext.type, vector<ReturnType>{ReturnType::INTEGER, ReturnType::BOOL});
 
         stringstream code;
         code << leftContext.code
@@ -473,7 +477,7 @@ ReturningContext BitwiseOrExpression::evaluate(Scope *scope) {
              << "or eax, " << rightContext.place << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext { ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -483,8 +487,8 @@ ReturningContext BitwiseAndExpression::evaluate(Scope *scope) {
         auto leftContext = left->evaluate(scope);
         auto rightContext = right->evaluate(scope);
 
-        checkType(leftContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
-        checkType(rightContext.type, vector<ReturnType> { ReturnType::INTEGER, ReturnType::BOOL });
+        checkType(leftContext.type, vector<ReturnType>{ReturnType::INTEGER, ReturnType::BOOL});
+        checkType(rightContext.type, vector<ReturnType>{ReturnType::INTEGER, ReturnType::BOOL});
 
         stringstream code;
         code << leftContext.code
@@ -493,7 +497,7 @@ ReturningContext BitwiseAndExpression::evaluate(Scope *scope) {
              << "and eax, " << rightContext.place << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext { ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -503,7 +507,7 @@ ReturningContext Block::evaluate(Scope *scope) {
         for (auto statement : statements) {
             code << statement->evaluate(scope).code << endl;
         }
-        return ReturningContext { code.str() };
+        return ReturningContext{code.str()};
     });
 }
 
@@ -512,7 +516,7 @@ ReturningContext Declaration::evaluate(Scope *scope) {
 
         ReturningContext context = expression != nullptr
                                    ? expression->evaluate(scope)
-                                   : ReturningContext{ defaultValue(type), type, "" };
+                                   : ReturningContext{defaultValue(type), type, ""};
 
         checkType(context.type, type);
 
@@ -528,7 +532,7 @@ ReturningContext Declaration::evaluate(Scope *scope) {
                  << "mov " << newVariablePlace << ", eax" << "\t\t; " << varName << "::" << to_string(type) << endl;
         }
 
-        return ReturningContext { newVariablePlace, type, code.str() };
+        return ReturningContext{newVariablePlace, type, code.str()};
     });
 }
 
@@ -545,7 +549,7 @@ ReturningContext Assignment::evaluate(Scope *scope) {
              << locationContext.code
              << "mov " << locationContext.place << ", eax" << endl;
 
-        return ReturningContext { locationContext.place, locationContext.type, code.str() };
+        return ReturningContext{locationContext.place, locationContext.type, code.str()};
     });
 }
 
@@ -567,11 +571,12 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
                  << "mov " << ebp(newVariable->offset) << ", eax" << endl;
         }
 
-        FunctionCode::add(FunctionMeta{ name, label, this->paramTypeList(), "", type });
+        FunctionCode::add(FunctionMeta{name, label, this->paramTypeList(), "", type});
 
         code << body->evaluate(functionScope).code;
         if (type != ReturnType::UNIT) {
-            auto error = new Print(vector<Expression *> { new StringExpression("non-void function end reached without return.") }, true);
+            auto error = new Print(
+                    vector<Expression *>{new StringExpression("non-void function end reached without return.")}, true);
             code << error->evaluate(functionScope).code;
             code << "ud2" << "\t\t; End of function reached without return." << endl;
             delete error;
@@ -581,7 +586,7 @@ ReturningContext FunctionDeclaration::evaluate(Scope *scope) {
              << "ret" << endl;
 
         FunctionCode::replaceCode(name, code.str());
-        return ReturningContext { "" };
+        return ReturningContext{""};
     });
 }
 
@@ -621,9 +626,9 @@ ReturningContext FunctionCall::evaluate(Scope *scope) {
         code << "call " << function.label << "\t\t; call " << functionName << endl
              << "add esp, " << to_string(arguments.size() * 8) << endl
              << "mov " << ebp(place) << ", eax" << endl
-             << Print(vector<Expression *> { new StringExpression("") }, true).evaluate(scope).code;
+             << Print(vector<Expression *>{new StringExpression("")}, true).evaluate(scope).code;
 
-        return ReturningContext { ebp(place), function.returnType, code.str() };
+        return ReturningContext{ebp(place), function.returnType, code.str()};
     });
 }
 
@@ -635,7 +640,7 @@ ReturningContext Return::evaluate(Scope *scope) {
              << "mov eax, " << context.place << endl
              << "leave" << endl
              << "ret" << endl;
-        return ReturningContext { code.str() };
+        return ReturningContext{code.str()};
     });
 }
 
@@ -664,7 +669,7 @@ ReturningContext Print::evaluate(Scope *scope) {
                      << "call printf" << endl
                      << "add esp, 8" << endl;
             }
-        } 
+        }
 
         if (addNewLine) {
             code << "sub esp, 4" << endl
@@ -673,7 +678,7 @@ ReturningContext Print::evaluate(Scope *scope) {
                  << "add esp, 4" << endl;
         }
 
-        return ReturningContext { code.str() };
+        return ReturningContext{code.str()};
     });
 }
 
@@ -700,7 +705,7 @@ ReturningContext If::evaluate(Scope *scope) {
         }
         code << trueLabel << ":" << endl;
 
-        return ReturningContext { code.str() };
+        return ReturningContext{code.str()};
     });
 }
 
@@ -714,6 +719,9 @@ ReturningContext While::evaluate(Scope *scope) {
         auto whileLabel = newLabel();
         auto endWhileLabel = newLabel();
 
+        lastLoopStart = whileLabel;
+        lastLoopEnd = endWhileLabel;
+
         stringstream code;
         code << whileLabel << ":" << "\t\t; while { end: " << endWhileLabel << "}" << endl
              << conditionContext.code
@@ -724,7 +732,7 @@ ReturningContext While::evaluate(Scope *scope) {
              << "jmp " << whileLabel << endl
              << endWhileLabel << ":" << "\t\t; end of " << whileLabel;
 
-        return ReturningContext { code.str() };
+        return ReturningContext{code.str()};
     });
 }
 
@@ -744,6 +752,9 @@ ReturningContext For::evaluate(Scope *scope) {
         auto forLabel = newLabel();
         auto endForLabel = newLabel();
 
+        lastLoopStart = forLabel;
+        lastLoopEnd = endForLabel;
+
         stringstream code;
         code << lowerBoundContext.code
              << upperBoundContext.code
@@ -762,13 +773,13 @@ ReturningContext For::evaluate(Scope *scope) {
              << endForLabel << ":" << "\t\t; end of " << forLabel << endl
              << "add esp, 4";
 
-        return ReturningContext{ code.str() };
+        return ReturningContext{code.str()};
     });
 }
 
 ReturningContext UnaryMinus::evaluate(Scope *scope) {
     auto multiplication = new MulExpression{
-            new IntExpression{ -1 },
+            new IntExpression{-1},
             expression
     };
 
@@ -793,7 +804,7 @@ ReturningContext Negation::evaluate(Scope *scope) {
              << "movzx eax, al" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::BOOL, code.str() };
+        return ReturningContext{ebp(place), ReturnType::BOOL, code.str()};
     });
 }
 
@@ -809,7 +820,7 @@ ReturningContext BitNegation::evaluate(Scope *scope) {
              << "xor eax, -1" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -817,7 +828,7 @@ ReturningContext ArrayAccess::evaluate(Scope *scope) {
     auto place = scope->newTempSpace();
     return scope->withSnapshot([this, scope, place]() {
         auto varPlace = scope->find(varName);
-        checkType(varPlace->type, vector<ReturnType>{ ReturnType::INT_ARRAY, ReturnType::STRING });
+        checkType(varPlace->type, vector<ReturnType>{ReturnType::INT_ARRAY, ReturnType::STRING});
 
         auto varPlaceOffset = varPlace->offset;
 
@@ -826,10 +837,10 @@ ReturningContext ArrayAccess::evaluate(Scope *scope) {
         code << indexContext.code
              << "mov edi, " << indexContext.place << endl;
 
-        return ReturningContext{ 
-            "DWORD[ebp - " + to_string(varPlaceOffset) + " + edi * 4]",
-            ReturnType::INTEGER,
-            code.str()
+        return ReturningContext{
+                "DWORD[ebp - " + to_string(varPlaceOffset) + " + edi * 4]",
+                ReturnType::INTEGER,
+                code.str()
         };
 
         // stringstream code;
@@ -846,7 +857,7 @@ ReturningContext ArraySet::evaluate(Scope *scope) {
     auto place = scope->newTempSpace();
     return scope->withSnapshot([this, scope, place]() {
         auto varPlace = scope->find(varName);
-        checkType(varPlace->type, vector<ReturnType>{ ReturnType::INT_ARRAY, ReturnType::STRING });
+        checkType(varPlace->type, vector<ReturnType>{ReturnType::INT_ARRAY, ReturnType::STRING});
 
         auto varPlaceOffset = varPlace->offset >= 0 ? varPlace->offset : (varPlace->offset * -1);
 
@@ -863,7 +874,7 @@ ReturningContext ArraySet::evaluate(Scope *scope) {
              << "mov DWORD[ebp - " << varPlaceOffset << " + eax * 4], ecx" << endl
              << "mov " << ebp(place) << ", eax" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
@@ -874,18 +885,24 @@ ReturningContext BitwiseNegation::evaluate(Scope *scope) {
         if (context.type == ReturnType::BOOL) {
             return Negation(expression).evaluate(scope);
         }
-        
+
         stringstream code;
         code << context.code
              << "mov ecx, " << context.place << endl
              << "xor ecx, -1" << endl
              << "mov " << ebp(place) << ", ecx" << endl;
 
-        return ReturningContext{ ebp(place), ReturnType::INTEGER, code.str() };
+        return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
 }
 
+ReturningContext Break::evaluate(Scope *scope) {
+    return ReturningContext{"jmp " + lastLoopEnd + "\n"};
+}
 
+ReturningContext Continue::evaluate(Scope *scope) {
+    return ReturningContext{"jmp " + lastLoopStart + "\n"};
+}
 
 // streams
 

@@ -68,6 +68,8 @@ LETTER [a-zA-Z]
 "while"                         { return KW_WHILE; }
 "for"                           { return KW_FOR; }
 "end"                           { return KW_END; }
+"break"                         { return KW_BREAK; }
+"continue"                      { return KW_CONTINUE; }
 "function"                      { return KW_FUNCTION; }
 "true"                          { yylval.bool_t = true; return BOOL_LITERAL; }
 "false"                         { yylval.bool_t = false; return BOOL_LITERAL; }

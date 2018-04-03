@@ -69,29 +69,31 @@ extern int yydebug;
     KW_BOOL = 272,
     KW_INT = 273,
     KW_ARRAY = 274,
-    KW_RETURN = 275,
-    TK_EOL = 276,
-    TK_LPAREN = 277,
-    TK_RPAREN = 278,
-    TK_LBRACK = 279,
-    TK_RBRACK = 280,
-    TK_DOUBLE_COLON = 281,
-    TK_LBRACE = 282,
-    TK_RBRACE = 283,
-    OP_PLUS_ASSIGN = 284,
-    OP_SUB_ASSIGN = 285,
-    OP_MUL_ASSIGN = 286,
-    OP_DIV_ASSIGN = 287,
-    OP_MOD_ASSIGN = 288,
-    OP_POW_ASSIGN = 289,
-    OP_LTE = 290,
-    OP_GTE = 291,
-    OP_NE = 292,
-    OP_EQ = 293,
-    TK_AND = 294,
-    TK_OR = 295,
-    TK_RSHIFT = 296,
-    TK_LSHIFT = 297
+    KW_BREAK = 275,
+    KW_CONTINUE = 276,
+    KW_RETURN = 277,
+    TK_EOL = 278,
+    TK_LPAREN = 279,
+    TK_RPAREN = 280,
+    TK_LBRACK = 281,
+    TK_RBRACK = 282,
+    TK_DOUBLE_COLON = 283,
+    TK_LBRACE = 284,
+    TK_RBRACE = 285,
+    OP_PLUS_ASSIGN = 286,
+    OP_SUB_ASSIGN = 287,
+    OP_MUL_ASSIGN = 288,
+    OP_DIV_ASSIGN = 289,
+    OP_MOD_ASSIGN = 290,
+    OP_POW_ASSIGN = 291,
+    OP_LTE = 292,
+    OP_GTE = 293,
+    OP_NE = 294,
+    OP_EQ = 295,
+    TK_AND = 296,
+    TK_OR = 297,
+    TK_RSHIFT = 298,
+    TK_LSHIFT = 299
   };
 #endif
 
@@ -110,7 +112,7 @@ union YYSTYPE
     ReturnType type_t;
     vector<FunctionDeclaration::Param> *params_t;
 
-#line 114 "tokens.h" /* yacc.c:1915  */
+#line 116 "tokens.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;

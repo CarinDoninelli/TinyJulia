@@ -42,7 +42,7 @@
 %token<id_t> TK_ID
 %token<id_t> STRING_LITERAL CHAR_LITERAL
 %token<bool_t> BOOL_LITERAL
-%token KW_IF KW_ELSE KW_WHILE KW_FOR KW_PRINTLN KW_END KW_ELIF KW_PRINT KW_FUNCTION KW_BOOL KW_INT KW_ARRAY
+%token KW_IF KW_ELSE KW_WHILE KW_FOR KW_PRINTLN KW_END KW_ELIF KW_PRINT KW_FUNCTION KW_BOOL KW_INT KW_ARRAY KW_BREAK KW_CONTINUE
 %token KW_RETURN
 %token TK_EOL
 %token TK_LPAREN TK_RPAREN TK_LBRACK TK_RBRACK TK_DOUBLE_COLON TK_LBRACE TK_RBRACE
@@ -63,6 +63,7 @@
 %type<expression_t> bitwise_or bitwise_xor bitwise_and
 %type<expression_t> left_shift right_shift
 %type<expression_t> relational arithmetic term exponent unary factor
+%type<expression_t> break continue
 
 %expect 0
 
@@ -95,6 +96,14 @@ statement: print_statement  { $$ = $1; }
     | for                   { $$ = $1; }
     | function              { $$ = $1; }
     | return                { $$ = $1; }
+    | break                 { $$ = $1; }
+    | continue              { $$ = $1; }
+;
+
+break: KW_BREAK { $$ = new Break(); }
+;
+
+continue: KW_CONTINUE { $$ = new Continue(); }
 ;
 
 return: KW_RETURN expression { $$ = new Return($2); }
