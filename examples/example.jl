@@ -1,11 +1,16 @@
-function factorial(z::Int)::Int
-	if z == 1 || z == 0
-		return 1
-	end
-	return factorial(z-1) * z
+x::Int = 3 + 2*5
+
+println(x)
+if x > 3
+    println("Mayor")
+elseif x < 3
+    println("Menor")
+else
+    println("Igual")
 end
 
-println(factorial(5))
-
-
-# prints 120
+#=
+should print:
+    13
+    Mayor
+=#

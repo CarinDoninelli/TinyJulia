@@ -79,10 +79,10 @@ ReturningContext AddExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << leftContext.code
-             << "mov eax, " << leftContext.place << endl
+             << "mov " << ebp(place) << ", " << leftContext.place << endl
              << rightContext.code
-             << "add eax, " << rightContext.place << endl
-             << "mov " << ebp(place) << ", eax" << endl;
+             << "mov eax, " << rightContext.place << endl
+             << "add " << ebp(place) << ", eax" << endl;
 
         return ReturningContext{ebp(place), ReturnType::INTEGER, code.str()};
     });
@@ -456,8 +456,8 @@ ReturningContext PowExpression::evaluate(Scope *scope) {
 
         stringstream code;
         code << rightContext.code
-             << "push " << rightContext.place << endl
              << leftContext.code
+             << "push " << rightContext.place << endl
              << "push " << leftContext.place << endl
              << "call pow_helper_function" << endl
              << "mov " << ebp(place) << ", eax" << endl;
