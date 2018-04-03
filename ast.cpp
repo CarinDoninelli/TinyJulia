@@ -611,9 +611,9 @@ ReturningContext FunctionCall::evaluate(Scope *scope) {
         for (auto argument : this->arguments) { // NOLINT
             auto context = argument->evaluate(scope);
             argumentTypes.push_back(context.type);
-            auto space = ebp(scope->newTempSpace());
-            context.code = context.code + "mov eax, " + context.place + "\n" + "mov " + space + ", eax\n";
-            context.place = space;
+            // auto space = ebp(scope->newTempSpace());
+            // context.code = context.code + "mov eax, " + context.place + "\n" + "mov " + space + ", eax\n";
+            // context.place = space;
             contexts.push_back(context);
         }
 
@@ -624,14 +624,14 @@ ReturningContext FunctionCall::evaluate(Scope *scope) {
             code << context.code;
         }
 
+        code << "sub esp, " << to_string(arguments.size() * 8) << endl;
         for (const auto &context : contexts) {
             code << "push " << context.place << endl;
         }
 
         code << "call " << function.label << "\t\t; call " << functionName << endl
              << "add esp, " << to_string(arguments.size() * 8) << endl
-             << "mov " << ebp(place) << ", eax" << endl
-             << Print(vector<Expression *>{new StringExpression("")}, true).evaluate(scope).code;
+             << "mov " << ebp(place) << ", eax" << endl;
 
         return ReturningContext{ebp(place), function.returnType, code.str()};
     });
@@ -657,9 +657,11 @@ ReturningContext Print::evaluate(Scope *scope) {
         }
 
         stringstream code;
-
         for (const auto &context : contexts) {
             code << context.code;
+        }
+
+        for (const auto &context : contexts) {
             if (context.type == ReturnType::STRING) {
                 code << "sub esp, 4" << endl
                      << "push " << context.place << endl
