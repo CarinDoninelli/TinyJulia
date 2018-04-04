@@ -33,7 +33,8 @@ boolValue::Bool = true;
  z::Bool = !true
  println(~z)
 
-#=# Should Print
+#=     gt
+ Should Print
 
 x = 10
 y = 20

@@ -11,9 +11,8 @@ for a = 1:4
     end
 end
 
-#=Prints
-Menor a 25 15
-Mayor a 25 34
-Igual a 25 25
-Menor a 25 8
+#=
+Prints
+menor mierda
+mayor mierda
 =#
